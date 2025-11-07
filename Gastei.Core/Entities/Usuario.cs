@@ -1,9 +1,12 @@
 ﻿using Gastei.Core.Enums;
+using SQLite;
 
 namespace Gastei.Core.Entities;
 
+[Table("Usuarios")]
 public class Usuario
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public string Nome { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -15,5 +18,3 @@ public class Usuario
 }
 
 
-
-//C:\Users\lucas.tavares\Documents\Lucas\Gastei\Gastei.UI\Resources\AppIcon\appicon.svg

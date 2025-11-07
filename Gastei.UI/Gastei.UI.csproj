@@ -45,4 +45,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Gastei.Core\Gastei.Core.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\UsuarioPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
 </Project>

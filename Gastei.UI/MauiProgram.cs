@@ -1,7 +1,5 @@
-﻿using Gastei.UI.ViewModels;
-using Gastei.UI.Views;
+﻿using Gastei.UI.Views;
 using Gastei.UI.Database;
-using Gastei.Core.Interfaces;
 
 namespace Gastei.UI;
 
@@ -21,14 +19,9 @@ public static class MauiProgram
         // Services
         builder.Services.AddSingleton<DatabaseService>();
 
-        // Repositories
-        builder.Services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
-
-        // ViewModels
-        builder.Services.AddTransient<UsuarioViewModel>();
-
-        // Views
+        // Views (com injeção de dependência)
         builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<UsuarioPage>();
 
         return builder.Build();
     }

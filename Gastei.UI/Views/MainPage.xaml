@@ -3,19 +3,79 @@
     x:Class="Gastei.UI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Gastei">
+    Title="Gastei - Gestão Financeira">
 
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
-            <Label
-                Text="Bem-vindo ao Gastei!"
-                FontSize="24"
-                HorizontalOptions="Center" />
 
-            <Button
-                Text="Iniciar Configuração"
-                Clicked="OnButtonClicked"
-                HorizontalOptions="Center" />
+            <!-- Header -->
+            <Frame BackgroundColor="{StaticResource PrimaryColor}" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Gastei" 
+                           TextColor="White" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+                    <Label Text="Controle suas finanças de forma inteligente" 
+                           TextColor="White" 
+                           FontSize="14"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Menu Principal -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="15" RowSpacing="15">
+
+                <!-- Usuário -->
+                <Frame Grid.Row="0" Grid.Column="0">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="👤" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Usuário" FontSize="14" HorizontalOptions="Center"/>
+                        <Button Text="Configurar" 
+                                Clicked="OnUsuarioClicked"
+                                FontSize="12"
+                                HeightRequest="40"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Dívidas -->
+                <Frame Grid.Row="0" Grid.Column="1">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="💳" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Dívidas" FontSize="14" HorizontalOptions="Center"/>
+                        <Button Text="Gerenciar" 
+                                BackgroundColor="#FF6B35"
+                                FontSize="12"
+                                HeightRequest="40"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Orçamento -->
+                <Frame Grid.Row="1" Grid.Column="0">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📊" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Orçamento" FontSize="14" HorizontalOptions="Center"/>
+                        <Button Text="Visualizar" 
+                                BackgroundColor="#4CAF50"
+                                FontSize="12"
+                                HeightRequest="40"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Relatórios -->
+                <Frame Grid.Row="1" Grid.Column="1">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📈" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Relatórios" FontSize="14" HorizontalOptions="Center"/>
+                        <Button Text="Ver" 
+                                BackgroundColor="#9C27B0"
+                                FontSize="12"
+                                HeightRequest="40"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </Grid>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

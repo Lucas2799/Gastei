@@ -31,6 +31,8 @@ public partial class UsuarioViewModel : BaseViewModel
     public List<PerfilFinanceiro> PerfisDisponiveis { get; } =
         Enum.GetValues(typeof(PerfilFinanceiro)).Cast<PerfilFinanceiro>().ToList();
 
+    public List<int> DiasDisponiveis { get; } = new List<int> { 5, 10, 15, 20, 25, 30 };
+
     public UsuarioViewModel(IUsuarioRepository usuarioRepository)
     {
         _usuarioRepository = usuarioRepository;
@@ -55,6 +57,10 @@ public partial class UsuarioViewModel : BaseViewModel
                 PerfilSelecionado = usuario.Perfil;
             }
         }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Erro", $"Erro ao carregar usuário: {ex.Message}", "OK");
+        }
         finally
         {
             IsBusy = false;
@@ -62,7 +68,7 @@ public partial class UsuarioViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task SalvarUsuarioAsync()
+    private async Task SalvarAsync()
     {
         if (string.IsNullOrWhiteSpace(Nome) || SalarioBase <= 0)
         {
@@ -86,6 +92,7 @@ public partial class UsuarioViewModel : BaseViewModel
                 await _usuarioRepository.UpdateAsync(usuario);
 
             await Shell.Current.DisplayAlert("Sucesso", "Dados salvos com sucesso!", "OK");
+            await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    x:Class="Gastei.UI.Views.UsuarioPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Configurações do Usuário">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Header -->
+            <Label Text="Configurações do Usuário" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <!-- Formulário -->
+            <Frame>
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Nome -->
+                    <Label Text="Nome Completo *" 
+                           FontSize="14" 
+                           FontAttributes="Bold"/>
+                    <Entry x:Name="EntryNome" 
+                           Placeholder="Digite seu nome completo"/>
+
+                    <!-- Email -->
+                    <Label Text="Email" 
+                           FontSize="14" 
+                           FontAttributes="Bold"/>
+                    <Entry x:Name="EntryEmail" 
+                           Placeholder="seu@email.com" 
+                           Keyboard="Email"/>
+
+                    <!-- Salário Base -->
+                    <Label Text="Salário Base *" 
+                           FontSize="14" 
+                           FontAttributes="Bold"/>
+                    <Entry x:Name="EntrySalario" 
+                           Placeholder="R$ 0,00" 
+                           Keyboard="Numeric"/>
+
+                    <!-- Dia do Recebimento -->
+                    <Label Text="Dia de Recebimento *" 
+                           FontSize="14" 
+                           FontAttributes="Bold"/>
+                    <Picker x:Name="PickerDia" 
+                            Title="Selecione o dia">
+                        <Picker.Items>
+                            <x:String>5</x:String>
+                            <x:String>10</x:String>
+                            <x:String>15</x:String>
+                            <x:String>20</x:String>
+                            <x:String>25</x:String>
+                            <x:String>30</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- Perfil Financeiro -->
+                    <Label Text="Perfil Financeiro *" 
+                           FontSize="14" 
+                           FontAttributes="Bold"/>
+                    <Picker x:Name="PickerPerfil" 
+                            Title="Selecione seu perfil">
+                        <Picker.Items>
+                            <x:String>Equilibrado</x:String>
+                            <x:String>Investidor</x:String>
+                            <x:String>Conservador</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- Botão Salvar -->
+                    <Button Text="Salvar Configurações" 
+                            Clicked="OnSalvarClicked"
+                            HeightRequest="50"
+                            Margin="0,20,0,0"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Informações dos Perfis -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="💡 Sobre os Perfis Financeiros" 
+                           FontSize="16" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+
+                    <Label Text="• Equilibrado: 50% Necessidades, 30% Desejos, 20% Investimentos"
+                           FontSize="12"/>
+                    <Label Text="• Investidor: 60% Essenciais, 20% Investimentos, 20% Lazer"
+                           FontSize="12"/>
+                    <Label Text="• Conservador: 40% Essenciais, 30% Estilo de Vida, 20% Investimentos, 10% Metas"
+                           FontSize="12"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
