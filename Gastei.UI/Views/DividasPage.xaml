@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    x:Class="Gastei.UI.Views.DividasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
+    xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
+    Title="Gerenciar Dívidas">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="20">
+
+            <!-- Header com Total -->
+            <Frame BackgroundColor="{StaticResource PrimaryColor}">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Total em Dívidas" 
+                           TextColor="White" 
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}" 
+                           TextColor="White" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Lista de Dívidas -->
+            <CollectionView ItemsSource="{Binding Dividas}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="entities:Divida">
+                        <Grid Padding="10" ColumnDefinitions="*,Auto,Auto" HeightRequest="80">
+
+                            <!-- Informações da Dívida -->
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Descricao}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding Valor, StringFormat='Valor: R$ {0:F2}'}" 
+                                       FontSize="14"/>
+                                <Label Text="{Binding DiaVencimento, StringFormat='Vencimento: dia {0}'}" 
+                                       FontSize="12"/>
+                                <Label Text="{Binding Tipo, StringFormat='Tipo: {0}'}" 
+                                       FontSize="12"/>
+                            </VerticalStackLayout>
+
+                            <!-- Status -->
+                            <Label Grid.Column="1" 
+                                   Text="{Binding Ativa, Converter={StaticResource BooleanToStatusConverter}}"
+                                   VerticalOptions="Center"
+                                   Margin="0,0,10,0"/>
+
+                            <!-- Ações -->
+                            <VerticalStackLayout Grid.Column="2" Spacing="5">
+                                <Button Text="✏️" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource PrimaryColor}"
+                                        FontSize="12"/>
+                                <Button Text="{Binding Ativa, Converter={StaticResource BooleanToToggleTextConverter}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Gray"
+                                        FontSize="10"/>
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Botão Nova Dívida -->
+            <Button Text="+ Nova Dívida" 
+                    Command="{Binding NovaDividaCommand}"
+                    Margin="0,20,0,0"
+                    HeightRequest="50"/>
+
+            <!-- Loading -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                              IsRunning="{Binding IsBusy}"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

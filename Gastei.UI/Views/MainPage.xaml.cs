@@ -17,4 +17,8 @@ public partial class MainPage : ContentPage
         // Agora o DatabaseService será injetado automaticamente no UsuarioPage
         await Navigation.PushAsync(new UsuarioPage(_databaseService));
     }
+    private async void OnDividasClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new DividasPage());
+    }
 }

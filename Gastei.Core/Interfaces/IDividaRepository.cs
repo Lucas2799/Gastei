@@ -1,16 +1,16 @@
 ﻿using Gastei.Core.Entities;
 using Gastei.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Gastei.Core.Interfaces
+namespace Gastei.Core.Interfaces;
+
+public interface IDividaRepository
 {
-    public interface IDividaRepository : IRepository<Divida>
-    {
-        Task<List<Divida>> GetDividasAtivasAsync();
-        Task<List<Divida>> GetDividasPorTipoAsync(TipoDivida tipo);
-    }
+    Task<Divida> GetByIdAsync(int id);
+    Task<List<Divida>> GetAllAsync();
+    Task<int> InsertAsync(Divida entity);
+    Task<int> UpdateAsync(Divida entity);
+    Task<int> DeleteAsync(Divida entity);
+    Task<List<Divida>> GetDividasAtivasAsync();
+    Task<List<Divida>> GetDividasPorTipoAsync(TipoDivida tipo);
+    Task<List<Divida>> GetDividasPorDiaVencimentoAsync(int dia);
 }

@@ -44,6 +44,7 @@
                         <Label Text="💳" FontSize="32" HorizontalOptions="Center"/>
                         <Label Text="Dívidas" FontSize="14" HorizontalOptions="Center"/>
                         <Button Text="Gerenciar" 
+                                Clicked="OnDividasClicked"  
                                 BackgroundColor="#FF6B35"
                                 FontSize="12"
                                 HeightRequest="40"/>

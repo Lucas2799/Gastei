@@ -1,5 +1,6 @@
-﻿using SQLite;
-using Gastei.Core.Entities;
+﻿using Gastei.Core.Entities;
+using Gastei.Core.Enums;
+using SQLite;
 
 namespace Gastei.UI.Database;
 
@@ -30,12 +31,14 @@ public class DatabaseService
 
         try
         {
+            // Criar tabelas
             await _database.CreateTableAsync<Usuario>();
+            await _database.CreateTableAsync<Divida>(); // ← NOVA TABELA
 
             // Verificar se já existe algum usuário
-            var count = await _database.Table<Usuario>().CountAsync();
+            var countUsuario = await _database.Table<Usuario>().CountAsync();
 
-            if (count == 0)
+            if (countUsuario == 0)
             {
                 // Criar usuário padrão
                 var usuarioPadrao = new Usuario
@@ -49,11 +52,41 @@ public class DatabaseService
                     DataAtualizacao = DateTime.Now
                 };
                 await _database.InsertAsync(usuarioPadrao);
-                System.Diagnostics.Debug.WriteLine("Usuário padrão criado no banco de dados");
+            }
+
+            // Adicionar algumas dívidas de exemplo (opcional)
+            var countDividas = await _database.Table<Divida>().CountAsync();
+            if (countDividas == 0)
+            {
+                var dividasExemplo = new List<Divida>
+            {
+                new Divida
+                {
+                    Descricao = "Aluguel",
+                    Valor = 1300m,
+                    Tipo = TipoDivida.Fixa,
+                    DiaVencimento = 10,
+                    Ativa = true,
+                    DataCriacao = DateTime.Now
+                },
+                new Divida
+                {
+                    Descricao = "Internet",
+                    Valor = 99.90m,
+                    Tipo = TipoDivida.Fixa,
+                    DiaVencimento = 10,
+                    Ativa = true,
+                    DataCriacao = DateTime.Now
+                }
+            };
+
+                foreach (var divida in dividasExemplo)
+                {
+                    await _database.InsertAsync(divida);
+                }
             }
 
             _initialized = true;
-            System.Diagnostics.Debug.WriteLine("Banco de dados inicializado com sucesso");
         }
         catch (Exception ex)
         {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gastei.UI.Views.NovaDividaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
+    xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
+    xmlns:enums="clr-namespace:Gastei.Core.Enums;assembly=Gastei.Core"
+    Title="Nova Dívida"
+    x:DataType="viewmodels:NovaDividaViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="Descrição" FontAttributes="Bold" />
+            <Entry Text="{Binding DividaSelecionada.Descricao}" Placeholder="Ex: Cartão de crédito" />
+
+            <Label Text="Valor (R$)" FontAttributes="Bold" />
+            <Entry Text="{Binding DividaSelecionada.Valor}" 
+                   Keyboard="Numeric"
+                   Placeholder="0,00" />
+
+            <Label Text="Valor Estimado Próximo Mês (opcional)" FontAttributes="Bold" />
+            <Entry Text="{Binding DividaSelecionada.ValorEstimadoProximoMes}" 
+                   Keyboard="Numeric"
+                   Placeholder="0,00" />
+
+            <Label Text="Dia de Vencimento" FontAttributes="Bold" />
+            <Entry Text="{Binding DividaSelecionada.DiaVencimento}" 
+                   Keyboard="Numeric"
+                   Placeholder="Ex: 10" />
+
+            <Label Text="Tipo de Dívida" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding TiposDisponiveis}" 
+                    SelectedItem="{Binding DividaSelecionada.Tipo}"
+                    Title="Selecione o tipo" />
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Ativa" FontAttributes="Bold" VerticalOptions="Center"/>
+                <Switch IsToggled="{Binding DividaSelecionada.Ativa}" />
+            </HorizontalStackLayout>
+
+            <Button Text="💾 Salvar Dívida"
+                    Command="{Binding SalvarCommand}"
+                    HeightRequest="50"
+                    BackgroundColor="{StaticResource PrimaryColor}"
+                    TextColor="White"
+                    CornerRadius="10" />
+
+            <ActivityIndicator 
+                IsVisible="{Binding IsBusy}"
+                IsRunning="{Binding IsBusy}"
+                HorizontalOptions="Center" 
+                VerticalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
