@@ -1,4 +1,6 @@
 ﻿using Gastei.UI.Database;
+using Gastei.UI.ViewModels;
+using Gastei.UI.Helpers;    
 
 namespace Gastei.UI.Views;
 
@@ -20,5 +22,11 @@ public partial class MainPage : ContentPage
     private async void OnDividasClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new DividasPage());
+    }
+
+    private async void OnOrcamentoClicked(object sender, EventArgs e)
+    {
+        var page = ServiceHelper.GetService<OrcamentoPage>();
+        await Navigation.PushAsync(page);
     }
 }

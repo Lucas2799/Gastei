@@ -57,6 +57,7 @@
                         <Label Text="📊" FontSize="32" HorizontalOptions="Center"/>
                         <Label Text="Orçamento" FontSize="14" HorizontalOptions="Center"/>
                         <Button Text="Visualizar" 
+                                Clicked="OnOrcamentoClicked"
                                 BackgroundColor="#4CAF50"
                                 FontSize="12"
                                 HeightRequest="40"/>

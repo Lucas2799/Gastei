@@ -18,7 +18,7 @@
             <converters:BooleanToToggleTextConverter x:Key="BooleanToToggleTextConverter" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <converters:CategoriaToColorConverter x:Key="CategoriaToColorConverter" />
-
+            <converters:PercentConverter  x:Key="PercentConverter " />
         </ResourceDictionary>
     </Application.Resources>
 

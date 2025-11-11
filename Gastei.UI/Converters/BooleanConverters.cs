@@ -28,3 +28,4 @@ public class InverseBooleanConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => !(bool)(value ?? false);
 }
+

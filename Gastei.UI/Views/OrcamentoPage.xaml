@@ -1,0 +1,67 @@
+<ContentPage
+    x:Class="Gastei.UI.Views.OrcamentoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
+    xmlns:converters="clr-namespace:Gastei.UI.Converters"
+    Title="Orçamento">
+
+    <!-- ✅ Registra localmente o conversor -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PercentConverter x:Key="PercentConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Cabeçalho -->
+            <Label Text="{Binding MesSelecionado}"
+                   FontAttributes="Bold"
+                   FontSize="20"
+                   HorizontalOptions="Center"/>
+
+            <!-- Saldo -->
+            <Frame BackgroundColor="{StaticResource PrimaryColor}" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Saldo Atual" FontSize="16" TextColor="White"/>
+                    <Label Text="{Binding SaldoDisponivel, StringFormat='R$ {0:F2}'}"
+                           FontSize="26" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="{Binding TotalGastos, StringFormat='Total de Gastos: R$ {0:F2}'}"
+                           FontSize="13" TextColor="#DDD"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Projeção -->
+            <Frame BackgroundColor="#2E2E2E" CornerRadius="12" Padding="15">
+                <Label Text="Projeção Próximo Mês" FontSize="16" TextColor="#AAA"/>
+                <Label Text="{Binding TotalProximoMes, StringFormat='R$ {0:F2}'}"
+                       FontSize="22" FontAttributes="Bold" TextColor="#FFF"/>
+            </Frame>
+
+            <!-- Gastos por categoria -->
+            <Label Text="Gastos por Categoria" FontAttributes="Bold" FontSize="18"/>
+
+            <CollectionView ItemsSource="{Binding ResumoCategorias}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:CategoriaResumo">
+                        <Frame Padding="10" Margin="0,5" CornerRadius="10" BackgroundColor="#1E1E1E">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Categoria}" FontSize="14" TextColor="White"/>
+                                <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}"
+                                       Grid.Column="1" FontSize="14" TextColor="#DDD"/>
+                                <!-- ✅ Agora usa o conversor local -->
+                                <ProgressBar Grid.ColumnSpan="2" 
+                                             Progress="{Binding Percentual, Converter={StaticResource PercentConverter}}" 
+                                             HeightRequest="6" Margin="0,20,0,0"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

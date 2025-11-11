@@ -15,9 +15,8 @@ public class Divida
     public int DiaVencimento { get; set; }
     public bool Ativa { get; set; }
 
-    // ✅ Novos campos
-    public CategoriaDivida Categoria { get; set; }
-    public SubcategoriaDivida Subcategoria { get; set; }
+    public string Categoria { get; set; } = "Outros";
+    public string? Subcategoria { get; set; }
 
     public DateTime DataCriacao { get; set; }
     public DateTime? DataAtualizacao { get; set; }

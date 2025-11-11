@@ -53,6 +53,9 @@
 	  <MauiXaml Update="Views\NovaDividaPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\OrcamentoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\UsuarioPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
