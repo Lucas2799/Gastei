@@ -16,6 +16,9 @@
             <!-- Conversores -->
             <converters:BooleanToStatusConverter x:Key="BooleanToStatusConverter" />
             <converters:BooleanToToggleTextConverter x:Key="BooleanToToggleTextConverter" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:CategoriaToColorConverter x:Key="CategoriaToColorConverter" />
+
         </ResourceDictionary>
     </Application.Resources>
 

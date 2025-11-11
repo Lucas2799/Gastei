@@ -17,6 +17,12 @@ public partial class NovaDividaViewModel : BaseViewModel
     public List<TipoDivida> TiposDisponiveis { get; } =
         Enum.GetValues(typeof(TipoDivida)).Cast<TipoDivida>().ToList();
 
+    public List<CategoriaDivida> CategoriasDisponiveis { get; } =
+        Enum.GetValues(typeof(CategoriaDivida)).Cast<CategoriaDivida>().ToList();
+
+    public List<SubcategoriaDivida> SubcategoriasDisponiveis { get; } =
+        Enum.GetValues(typeof(SubcategoriaDivida)).Cast<SubcategoriaDivida>().ToList();
+
     public NovaDividaViewModel(IDividaRepository dividaRepository)
     {
         _dividaRepository = dividaRepository;

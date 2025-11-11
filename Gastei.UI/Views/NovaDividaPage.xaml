@@ -35,6 +35,16 @@
                     SelectedItem="{Binding DividaSelecionada.Tipo}"
                     Title="Selecione o tipo" />
 
+            <Label Text="Categoria" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding CategoriasDisponiveis}"
+        SelectedItem="{Binding DividaSelecionada.Categoria}"
+        Title="Selecione uma categoria" />
+
+            <Label Text="Subcategoria" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding SubcategoriasDisponiveis}"
+        SelectedItem="{Binding DividaSelecionada.Subcategoria}"
+        Title="Selecione uma subcategoria" />
+
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                 <Label Text="Ativa" FontAttributes="Bold" VerticalOptions="Center"/>
                 <Switch IsToggled="{Binding DividaSelecionada.Ativa}" />
