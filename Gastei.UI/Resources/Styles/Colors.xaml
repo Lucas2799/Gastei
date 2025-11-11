@@ -6,6 +6,7 @@
     <!-- Cores Primárias -->
     <Color x:Key="PrimaryColor">#512BD4</Color>
     <Color x:Key="PrimaryDarkColor">#3A1FA5</Color>
+    <Color x:Key="SecondaryColor">#FF6B35</Color>
 
     <!-- Cores de Texto -->
     <Color x:Key="TextColor">Black</Color>
