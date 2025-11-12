@@ -4,78 +4,124 @@ namespace Gastei.Core.Rules;
 
 public static class PerfilFinanceiroRules
 {
-    // Percentual máximo permitido por categoria conforme o perfil
-    // Valores expressos em frações (ex: 0.3 = 30%)
-    public static Dictionary<PerfilFinanceiro, Dictionary<CategoriaDivida, decimal>> LimitesPorPerfil
+    // Percentuais por bucket (valores em decimal: 0.5 = 50%)
+    private static readonly Dictionary<PerfilFinanceiro, (decimal Essenciais, decimal Investimentos, decimal Lazer)> BucketPercents
         = new()
         {
-            [PerfilFinanceiro.Equilibrado] = new()
-            {
-                // Essenciais (50% / 4 categorias = 12,5% cada)
-                { CategoriaDivida.Moradia, 0.125m },
-                { CategoriaDivida.Alimentacao, 0.125m },
-                { CategoriaDivida.Transporte, 0.125m },
-                { CategoriaDivida.Saude, 0.125m },
-
-                // Investimentos (20% / 3 = 6,67% cada)
-                { CategoriaDivida.Educacao, 0.0667m },
-                { CategoriaDivida.Investimento, 0.0667m },
-                { CategoriaDivida.Emergencias, 0.0667m },
-
-                // Lazer (30% / 4 = 7,5% cada)
-                { CategoriaDivida.Lazer, 0.075m },
-                { CategoriaDivida.Compras, 0.075m },
-                { CategoriaDivida.Outros, 0.075m },
-                { CategoriaDivida.Dividas, 0.075m }
-            },
-
-            [PerfilFinanceiro.Investidor] = new()
-            {
-                // Essenciais (50% / 4 = 12,5%)
-                { CategoriaDivida.Moradia, 0.125m },
-                { CategoriaDivida.Alimentacao, 0.125m },
-                { CategoriaDivida.Transporte, 0.125m },
-                { CategoriaDivida.Saude, 0.125m },
-
-                // Investimentos (40% / 3 = 13,33%)
-                { CategoriaDivida.Educacao, 0.1333m },
-                { CategoriaDivida.Investimento, 0.1333m },
-                { CategoriaDivida.Emergencias, 0.1333m },
-
-                // Lazer (10% / 4 = 2,5%)
-                { CategoriaDivida.Lazer, 0.025m },
-                { CategoriaDivida.Compras, 0.025m },
-                { CategoriaDivida.Outros, 0.025m },
-                { CategoriaDivida.Dividas, 0.025m }
-            },
-
-            [PerfilFinanceiro.Conservador] = new()
-            {
-                // Essenciais (60% / 4 = 15%)
-                { CategoriaDivida.Moradia, 0.15m },
-                { CategoriaDivida.Alimentacao, 0.15m },
-                { CategoriaDivida.Transporte, 0.15m },
-                { CategoriaDivida.Saude, 0.15m },
-
-                // Investimentos (10% / 3 = 3,33%)
-                { CategoriaDivida.Educacao, 0.0333m },
-                { CategoriaDivida.Investimento, 0.0333m },
-                { CategoriaDivida.Emergencias, 0.0333m },
-
-                // Lazer (30% / 4 = 7,5%)
-                { CategoriaDivida.Lazer, 0.075m },
-                { CategoriaDivida.Compras, 0.075m },
-                { CategoriaDivida.Outros, 0.075m },
-                { CategoriaDivida.Dividas, 0.075m }
-            }
+            [PerfilFinanceiro.Equilibrado] = (Essenciais: 0.50m, Investimentos: 0.20m, Lazer: 0.30m),
+            [PerfilFinanceiro.Investidor] = (Essenciais: 0.50m, Investimentos: 0.40m, Lazer: 0.10m),
+            [PerfilFinanceiro.Conservador] = (Essenciais: 0.60m, Investimentos: 0.10m, Lazer: 0.30m)
         };
 
+    // Mapeamento de categorias para buckets
+    private static readonly Dictionary<string, string> CategoriaParaBucket = new()
+    {
+        // Essenciais
+        ["Moradia"] = "Essenciais",
+        ["Alimentacao"] = "Essenciais",
+        ["Transporte"] = "Essenciais",
+        ["Saude"] = "Essenciais",
+
+        // Investimentos (aqui incluí Educacao / Investimento / Emergencias)
+        ["Educacao"] = "Investimentos",
+        ["Investimento"] = "Investimentos",
+        ["Emergencias"] = "Investimentos",
+
+        // Lazer
+        ["Lazer"] = "Lazer",
+        ["Compras"] = "Lazer",
+        ["Outros"] = "Lazer",
+        ["Dividas"] = "Lazer"
+    };
+
+    // Se você usar enums (recomendado), mapeie CategoriaDivida -> string nome:
+    public static string BucketOf(CategoriaDivida categoria)
+    {
+        var key = categoria.ToString();
+        if (CategoriaParaBucket.TryGetValue(key, out var bucket))
+            return bucket;
+
+        return "Lazer"; // fallback seguro — ou "Outros"
+    }
+
+    // Retorna dicionário Categoria -> percentual (soma aproximada 1.0)
+    public static Dictionary<CategoriaDivida, decimal> GetDistribuicaoPorPerfil(PerfilFinanceiro perfil)
+    {
+        if (!BucketPercents.TryGetValue(perfil, out var buckets))
+            throw new ArgumentException("Perfil desconhecido", nameof(perfil));
+
+        // Agrupa categorias por bucket usando todos os valores do enum CategoriaDivida
+        var todasCategorias = Enum.GetValues(typeof(CategoriaDivida))
+                                 .Cast<CategoriaDivida>()
+                                 .ToList();
+
+        var bucketGroups = new Dictionary<string, List<CategoriaDivida>>();
+        foreach (var cat in todasCategorias)
+        {
+            var bucket = BucketOf(cat);
+            if (!bucketGroups.ContainsKey(bucket))
+                bucketGroups[bucket] = new List<CategoriaDivida>();
+
+            bucketGroups[bucket].Add(cat);
+        }
+
+        // Percentual disponível por bucket
+        var bucketPercentMap = new Dictionary<string, decimal>
+        {
+            ["Essenciais"] = buckets.Essenciais,
+            ["Investimentos"] = buckets.Investimentos,
+            ["Lazer"] = buckets.Lazer
+        };
+
+        var result = new Dictionary<CategoriaDivida, decimal>();
+        decimal acumulado = 0m;
+
+        // Para cada bucket, divide igualmente entre categorias
+        foreach (var kv in bucketGroups)
+        {
+            var bucketName = kv.Key;
+            var categoriasNoBucket = kv.Value;
+            var count = categoriasNoBucket.Count;
+            var bucketPercent = bucketPercentMap.ContainsKey(bucketName) ? bucketPercentMap[bucketName] : 0m;
+
+            if (count == 0)
+                continue;
+
+            // divisão base
+            var baseShare = Math.Round(bucketPercent / count, 6); // precisão razoável
+            foreach (var cat in categoriasNoBucket)
+            {
+                result[cat] = baseShare;
+                acumulado += baseShare;
+            }
+        }
+
+        // Ajuste pelo resto causado pelo arredondamento: distribuir diferença proporcionalmente
+        var diferenca = Math.Round(1.0m - acumulado, 6);
+        if (Math.Abs(diferenca) > 0m)
+        {
+            // distribui o resto nas primeiras categorias (pode ajustar estratégia)
+            var keys = result.Keys.ToList();
+            var idx = 0;
+            while (Math.Abs(diferenca) > 0m)
+            {
+                var k = keys[idx % keys.Count];
+                // incrementa/subtrai pequenos passos para compensar
+                var passo = Math.Sign(diferenca) * 0.000001m;
+                result[k] += passo;
+                diferenca -= passo;
+                idx++;
+                if (idx > keys.Count * 10) break; // safety
+            }
+        }
+
+        return result;
+    }
+
+    // Helper para pegar apenas um limite
     public static decimal GetLimitePercentual(PerfilFinanceiro perfil, CategoriaDivida categoria)
     {
-        if (LimitesPorPerfil.ContainsKey(perfil) && LimitesPorPerfil[perfil].ContainsKey(categoria))
-            return LimitesPorPerfil[perfil][categoria];
-
-        // fallback: 10%
-        return 0.10m;
+        var map = GetDistribuicaoPorPerfil(perfil);
+        return map.TryGetValue(categoria, out var pct) ? pct : 0m;
     }
 }

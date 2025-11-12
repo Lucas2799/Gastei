@@ -70,7 +70,7 @@ public partial class NovaDividaViewModel : BaseViewModel
 
         // Limite permitido pelo perfil
         var limitePercentual = PerfilFinanceiroRules.GetLimitePercentual(perfil, DividaSelecionada.Categoria);
-        var limiteValor = salario * limitePercentual;
+        var limiteValor = usuario.SalarioBase * limitePercentual;
 
         // Valor total da categoria se incluir a nova dívida
         var totalComNova = totalCategoria + DividaSelecionada.Valor;
