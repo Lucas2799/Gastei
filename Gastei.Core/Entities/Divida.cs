@@ -18,6 +18,10 @@ public class Divida
     public string Categoria { get; set; } = "Outros";
     public string? Subcategoria { get; set; }
 
+    [Ignore] public string Status { get; set; }
+    [Ignore] public Color StatusCor { get; set; }
+    [Ignore] public Color CategoriaCor { get; set; }
+
     public DateTime DataCriacao { get; set; }
     public DateTime? DataAtualizacao { get; set; }
 }

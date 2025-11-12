@@ -6,130 +6,132 @@
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
     Title="Gerenciar Dívidas">
-    <ScrollView>
-        <VerticalStackLayout Spacing="10" Padding="20">
 
-            <!-- Header com Total -->
-            <Frame BackgroundColor="{StaticResource PrimaryColor}">
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Total em Dívidas" 
-                           TextColor="White" 
-                           FontSize="16"
-                           HorizontalOptions="Center"/>
-                    <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}" 
-                           TextColor="White" 
-                           FontSize="24" 
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"/>
-                </VerticalStackLayout>
+    <ContentPage.Resources>
+        <!-- Template de item reciclável -->
+        <DataTemplate x:Key="DividaTemplate" x:DataType="entities:Divida">
+            <Frame Margin="0,5"
+                   Padding="12"
+                   HasShadow="False"
+                   BorderColor="#333"
+                   CornerRadius="10"
+                   BackgroundColor="#1E1E1E">
+
+                <Grid RowDefinitions="Auto,Auto"
+                      ColumnDefinitions="*,Auto">
+
+                    <!-- Linha principal -->
+                    <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10" VerticalOptions="Center">
+                        <Label Text="{Binding Descricao}"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               TextColor="White"
+                               HorizontalOptions="StartAndExpand" />
+
+                        <!-- Status simplificado -->
+                        <Label Text="{Binding Status}"
+                               FontSize="13"
+                               TextColor="{Binding StatusCor}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <!-- Valor e detalhes -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2" Margin="0,4,0,0">
+                        <Label Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
+                               FontSize="15"
+                               TextColor="#F5F5F5"
+                               FontAttributes="Bold" />
+
+                        <Label Text="{Binding DiaVencimento, StringFormat='Vencimento: dia {0}'}"
+                               FontSize="12"
+                               TextColor="#AAA" />
+
+                        <Label Text="{Binding Tipo, StringFormat='Tipo: {0}'}"
+                               FontSize="12"
+                               TextColor="#AAA" />
+
+                        <!-- Tags -->
+                        <HorizontalStackLayout Spacing="6" Margin="0,3,0,0">
+                            <Border StrokeThickness="0"
+                                    BackgroundColor="{Binding CategoriaCor}"
+                                    StrokeShape="RoundRectangle 8">
+                                <Label Text="{Binding Categoria}"
+                                       FontSize="12"
+                                       TextColor="White"
+                                       Padding="8,3"
+                                       FontAttributes="Bold" />
+                            </Border>
+
+                            <Border StrokeThickness="0"
+                                    BackgroundColor="#333"
+                                    StrokeShape="RoundRectangle 8">
+                                <Label Text="{Binding Subcategoria}"
+                                       FontSize="12"
+                                       TextColor="#DDD"
+                                       Padding="6,3" />
+                            </Border>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Ações -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                        <Button Text="✏️"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                FontSize="14"
+                                TextColor="#FFCC00"
+                                Padding="0" />
+
+                        <Button Text="{Binding Ativa, Converter={StaticResource BooleanToToggleTextConverter}}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                FontSize="11"
+                                TextColor="Gray"
+                                Padding="0" />
+                    </VerticalStackLayout>
+                </Grid>
             </Frame>
+        </DataTemplate>
+    </ContentPage.Resources>
 
-            <!-- Lista de Dívidas -->
-            <CollectionView ItemsSource="{Binding Dividas}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="entities:Divida">
-                        <Frame Margin="0,5"
-           Padding="12"
-           HasShadow="True"
-           BorderColor="#333"
-           CornerRadius="12"
-           BackgroundColor="#1E1E1E">
-
-                            <Grid RowDefinitions="Auto,Auto"
-              ColumnDefinitions="*,Auto">
-
-                                <!-- Linha principal: descrição e status -->
-                                <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10" VerticalOptions="Center">
-                                    <Label Text="{Binding Descricao}"
-                       FontAttributes="Bold"
+    <Grid Padding="20" RowDefinitions="Auto,*,Auto">
+        <!-- Header -->
+        <Frame BackgroundColor="{StaticResource PrimaryColor}" Grid.Row="0" Margin="0,0,0,10" CornerRadius="12">
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Total em Dívidas" 
+                       TextColor="White" 
                        FontSize="16"
-                       TextColor="White"
-                       HorizontalOptions="StartAndExpand" />
+                       HorizontalOptions="Center"/>
+                <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}" 
+                       TextColor="White" 
+                       FontSize="24" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
 
-                                    <Label Text="{Binding Ativa, Converter={StaticResource BooleanToStatusConverter}}"
-                       FontSize="13"
-                       TextColor="{Binding Ativa, Converter={StaticResource InverseBooleanConverter}, ConverterParameter='Red;Green'}"
-                       VerticalOptions="Center" />
-                                </HorizontalStackLayout>
+        <!-- Lista otimizada -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Dividas}"
+                        ItemTemplate="{StaticResource DividaTemplate}"
+                        SelectionMode="None"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}" />
 
-                                <!-- Valor e Vencimento -->
-                                <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2" Margin="0,4,0,0">
-                                    <Label Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
-                       FontSize="15"
-                       TextColor="#F5F5F5"
-                       FontAttributes="Bold" />
+        <!-- Botão Nova Dívida -->
+        <Button Text="+ Nova Dívida" 
+                Command="{Binding NovaDividaCommand}"
+                Grid.Row="2"
+                Margin="0,20,0,0"
+                HeightRequest="50"/>
 
-                                    <Label Text="{Binding DiaVencimento, StringFormat='Vencimento: dia {0}'}"
-                       FontSize="12"
-                       TextColor="#AAA" />
-
-                                    <Label Text="{Binding Tipo, StringFormat='Tipo: {0}'}"
-                       FontSize="12"
-                       TextColor="#AAA" />
-
-                                    <!-- Categoria e Subcategoria -->
-                                    <HorizontalStackLayout Spacing="6" Margin="0,3,0,0">
-
-                                        <!-- Tag de Categoria -->
-                                        <Border StrokeThickness="0"
-            BackgroundColor="{Binding Categoria, Converter={StaticResource CategoriaToColorConverter}}"
-            StrokeShape="RoundRectangle 8">
-                                            <Label Text="{Binding Categoria}"
-               FontSize="12"
-               TextColor="White"
-               Padding="8,3"
-               FontAttributes="Bold" />
-                                        </Border>
-
-                                        <!-- Tag de Subcategoria -->
-                                        <Border StrokeThickness="0"
-            BackgroundColor="#333"
-            StrokeShape="RoundRectangle 8">
-                                            <Label Text="{Binding Subcategoria}"
-               FontSize="12"
-               TextColor="#DDD"
-               Padding="6,3" />
-                                        </Border>
-                                    </HorizontalStackLayout>
-
-
-                                </VerticalStackLayout>
-
-                                <!-- Ações -->
-                                <VerticalStackLayout Grid.Row="1" Grid.Column="1" VerticalOptions="Center" Spacing="4">
-                                    <Button Text="✏️"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
-                        CommandParameter="{Binding .}"
-                        BackgroundColor="Transparent"
-                        FontSize="14"
-                        TextColor="#FFCC00"
-                        Padding="0" />
-                                    <Button Text="{Binding Ativa, Converter={StaticResource BooleanToToggleTextConverter}}"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
-                        CommandParameter="{Binding .}"
-                        BackgroundColor="Transparent"
-                        FontSize="11"
-                        TextColor="Gray"
-                        Padding="0" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Botão Nova Dívida -->
-            <Button Text="+ Nova Dívida" 
-                    Command="{Binding NovaDividaCommand}"
-                    Margin="0,20,0,0"
-                    HeightRequest="50"/>
-
-            <!-- Loading -->
-            <ActivityIndicator IsVisible="{Binding IsBusy}" 
-                              IsRunning="{Binding IsBusy}"
-                              HorizontalOptions="Center"
-                              VerticalOptions="Center"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <!-- Loading -->
+        <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                           IsRunning="{Binding IsBusy}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
 </ContentPage>

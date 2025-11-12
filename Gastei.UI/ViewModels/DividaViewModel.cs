@@ -45,6 +45,44 @@ public partial class DividaViewModel : BaseViewModel
         }
     }
 
+    public async Task CarregarDividasAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var lista = await _dividaRepository.GetDividasAtivasAsync();
+
+            // Pré-calcular status para evitar converter
+            foreach (var d in lista)
+            {
+                d.Status = d.Ativa ? "✅ Ativa" : "❌ Inativa";
+                d.StatusCor = d.Ativa ? Colors.Green : Colors.Red;
+                d.CategoriaCor = d.Categoria switch
+                {
+                    "Moradia" => Color.FromArgb("#1976D2"),
+                    "Lazer" => Color.FromArgb("#E91E63"),
+                    "Alimentação" => Color.FromArgb("#4CAF50"),
+                    "Transporte" => Color.FromArgb("#FF9800"),
+                    _ => Color.FromArgb("#9E9E9E")
+                };
+            }
+
+            Dividas = new ObservableCollection<Divida>(lista);
+            TotalDividas = Dividas.Sum(d => d.Valor);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task CarregarMaisAsync()
+    {
+        var novas = await _dividaRepository.GetDividasAtivasAsync();
+        foreach (var d in novas.Skip(Dividas.Count).Take(10))
+            Dividas.Add(d);
+    }
+
     [RelayCommand]
     private async Task NovaDividaAsync()
     {
