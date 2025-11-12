@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gastei.Core.Entities;
-using Gastei.Core.Enums;
 using Gastei.Core.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -12,19 +11,31 @@ public partial class DividaViewModel : BaseViewModel
     private readonly IDividaRepository _dividaRepository;
 
     [ObservableProperty]
-    private ObservableCollection<Divida> _dividas = new();
+    private ObservableCollection<Divida> dividas = new();
 
     [ObservableProperty]
-    private decimal _totalDividas;
+    private decimal totalDividas;
 
     [ObservableProperty]
-    private bool _mostrarSomenteAtivas = true;
+    private bool mostrarSomenteAtivas = true;
+
+    // ✅ Adicionados os campos reativos
+    [ObservableProperty]
+    private bool carregandoMais;
+
+    [ObservableProperty]
+    private bool temMaisItens = true;
+
+    private const int LOTE_TAMANHO = 15;
+    private int _paginaAtual = 0;
+    private List<Divida> _todasDividas = new();
+
+    public IRelayCommand CarregarMaisCommand { get; }
 
     public DividaViewModel(IDividaRepository dividaRepository)
     {
         _dividaRepository = dividaRepository;
-        Title = "Dívidas";
-        _ = LoadAsync();
+        CarregarMaisCommand = new AsyncRelayCommand(CarregarMaisAsync);
     }
 
     private async Task LoadAsync()
@@ -32,7 +43,7 @@ public partial class DividaViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var lista = _mostrarSomenteAtivas
+            var lista = mostrarSomenteAtivas
                 ? await _dividaRepository.GetDividasAtivasAsync()
                 : await _dividaRepository.GetAllAsync();
 
@@ -47,13 +58,16 @@ public partial class DividaViewModel : BaseViewModel
 
     public async Task CarregarDividasAsync()
     {
+        if (IsBusy) return;
+
         IsBusy = true;
         try
         {
-            var lista = await _dividaRepository.GetDividasAtivasAsync();
+            _paginaAtual = 0;
+            TemMaisItens = true;
+            _todasDividas = await _dividaRepository.GetDividasAtivasAsync();
 
-            // Pré-calcular status para evitar converter
-            foreach (var d in lista)
+            foreach (var d in _todasDividas)
             {
                 d.Status = d.Ativa ? "✅ Ativa" : "❌ Inativa";
                 d.StatusCor = d.Ativa ? Colors.Green : Colors.Red;
@@ -67,7 +81,11 @@ public partial class DividaViewModel : BaseViewModel
                 };
             }
 
-            Dividas = new ObservableCollection<Divida>(lista);
+            // Carrega o primeiro lote
+            var primeiroLote = _todasDividas.Take(LOTE_TAMANHO).ToList();
+            Dividas = new ObservableCollection<Divida>(primeiroLote);
+            _paginaAtual++;
+
             TotalDividas = Dividas.Sum(d => d.Valor);
         }
         finally
@@ -78,9 +96,27 @@ public partial class DividaViewModel : BaseViewModel
 
     private async Task CarregarMaisAsync()
     {
-        var novas = await _dividaRepository.GetDividasAtivasAsync();
-        foreach (var d in novas.Skip(Dividas.Count).Take(10))
-            Dividas.Add(d);
+        if (CarregandoMais || !TemMaisItens) return;
+
+        CarregandoMais = true;
+        await Task.Delay(300); // pequena pausa assíncrona
+
+        var inicio = _paginaAtual * LOTE_TAMANHO;
+        var lote = _todasDividas.Skip(inicio).Take(LOTE_TAMANHO).ToList();
+
+        if (lote.Any())
+        {
+            foreach (var d in lote)
+                Dividas.Add(d);
+
+            _paginaAtual++;
+        }
+        else
+        {
+            TemMaisItens = false;
+        }
+
+        CarregandoMais = false;
     }
 
     [RelayCommand]

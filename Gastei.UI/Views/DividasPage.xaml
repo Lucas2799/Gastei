@@ -114,12 +114,28 @@
 
         <!-- Lista otimizada -->
         <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding Dividas}"
-                        ItemTemplate="{StaticResource DividaTemplate}"
-                        SelectionMode="None"
-                        ItemSizingStrategy="MeasureFirstItem"
-                        RemainingItemsThreshold="5"
-                        RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}" />
+                ItemsSource="{Binding Dividas}"
+                ItemTemplate="{StaticResource DividaTemplate}"
+                SelectionMode="None"
+                ItemSizingStrategy="MeasureFirstItem"
+                RemainingItemsThreshold="5"
+                RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}">
+            <CollectionView.Footer>
+                <StackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="{Binding CarregandoMais}" IsVisible="{Binding CarregandoMais}" />
+                    <Label Text="Carregando mais..." 
+                   IsVisible="{Binding CarregandoMais}" 
+                   FontSize="12" 
+                   TextColor="#AAA"
+                   HorizontalOptions="Center" />
+                    <!--<Label Text="Fim da lista" 
+                   IsVisible="{Binding TemMaisItens, Converter={StaticResource InverseBooleanConverter}}" 
+                   FontSize="12"
+                   TextColor="#777"
+                   HorizontalOptions="Center" />-->
+                </StackLayout>
+            </CollectionView.Footer>
+        </CollectionView>
 
         <!-- Botão Nova Dívida -->
         <Button Text="+ Nova Dívida" 

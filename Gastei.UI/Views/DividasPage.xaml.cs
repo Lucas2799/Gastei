@@ -20,7 +20,7 @@ public partial class DividasPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is DividaViewModel vm)
+        if (BindingContext is DividaViewModel vm && !vm.Dividas.Any())
             await vm.CarregarDividasAsync();
     }
 
