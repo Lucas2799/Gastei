@@ -63,23 +63,37 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
+                    <!-- Ações -->
                     <VerticalStackLayout Grid.Row="1" Grid.Column="1" VerticalOptions="Center" Spacing="4">
-                        <Button Text="✏️"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
-                                CommandParameter="{Binding .}"
-                                BackgroundColor="Transparent"
-                                FontSize="14"
-                                TextColor="#FFCC00"
-                                Padding="0" />
 
+                        <!-- Editar -->
+                        <Button Text="✏️"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
+            CommandParameter="{Binding .}"
+            BackgroundColor="Transparent"
+            FontSize="14"
+            TextColor="#FFCC00"
+            Padding="0" />
+
+                        <!-- Ativar/Inativar -->
                         <Button Text="{Binding Ativa, Converter={StaticResource BooleanToToggleTextConverter}}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
-                                CommandParameter="{Binding .}"
-                                BackgroundColor="Transparent"
-                                FontSize="11"
-                                TextColor="Gray"
-                                Padding="0" />
+            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
+            CommandParameter="{Binding .}"
+            BackgroundColor="Transparent"
+            FontSize="11"
+            TextColor="Gray"
+            Padding="0" />
+
+                        <!-- Excluir -->
+                        <Button Text="🗑️"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=ExcluirDividaCommand}"
+            CommandParameter="{Binding .}"
+            BackgroundColor="Transparent"
+            FontSize="12"
+            TextColor="Red"
+            Padding="0" />
                     </VerticalStackLayout>
+
                 </Grid>
             </Frame>
         </DataTemplate>

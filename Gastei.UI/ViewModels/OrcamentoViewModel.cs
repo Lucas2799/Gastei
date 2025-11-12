@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Gastei.Core.Entities;
+using Gastei.Core.Enums;
 using Gastei.Core.Interfaces;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,7 +39,6 @@ public partial class OrcamentoViewModel : BaseViewModel
             SalarioBase = usuario?.SalarioBase ?? 0;
 
             var dividas = await _dividaRepository.GetAllAsync();
-
             var dividasAtivas = dividas.Where(d => d.Ativa).ToList();
 
             TotalGastos = dividasAtivas.Sum(d => d.Valor);
@@ -49,12 +49,16 @@ public partial class OrcamentoViewModel : BaseViewModel
             SaldoDisponivel = SalarioBase - TotalGastos;
 
             var agrupado = dividasAtivas
-                .GroupBy(d => d.Categoria != 0 ? d.Categoria.ToString() : "Outros")
+                .GroupBy(d => Enum.IsDefined(typeof(CategoriaDivida), d.Categoria)
+                    ? d.Categoria.ToString()
+                    : "Outros")
                 .Select(g => new CategoriaResumo
                 {
                     Categoria = g.Key,
                     Total = g.Sum(x => x.Valor),
-                    Percentual = SalarioBase > 0 ? ((double)(g.Sum(x => x.Valor) / SalarioBase) * 100) : 0
+                    Percentual = SalarioBase > 0
+                        ? ((double)(g.Sum(x => x.Valor) / SalarioBase) * 100)
+                        : 0
                 })
                 .OrderByDescending(x => x.Total)
                 .ToList();
@@ -66,6 +70,7 @@ public partial class OrcamentoViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
 }
 
 public class CategoriaResumo

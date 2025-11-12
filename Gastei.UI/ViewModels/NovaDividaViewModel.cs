@@ -43,13 +43,6 @@ public partial class NovaDividaViewModel : BaseViewModel
             return;
         }
 
-        // ✅ Garantir que mês e ano sejam válidos
-        if (DividaSelecionada.Categoria == 0)
-            DividaSelecionada.Categoria = CategoriaDivida.Outros;
-
-        if (DividaSelecionada.Subcategoria == 0)
-            DividaSelecionada.Subcategoria = SubcategoriaDivida.Outros;
-
         // ✅ Garantir controle mensal
         if (DividaSelecionada.ReferenciaMes == 0)
             DividaSelecionada.ReferenciaMes = DateTime.Now.Month;

@@ -41,7 +41,7 @@ public partial class DividaViewModel : BaseViewModel
     public DividaViewModel(IDividaRepository dividaRepository)
     {
         _dividaRepository = dividaRepository;
-        CarregarMaisCommand = new AsyncRelayCommand(CarregarMaisAsync);
+       // CarregarMaisCommand = new AsyncRelayCommand(CarregarMaisAsync);
     }
 
     private async Task LoadAsync()
@@ -80,6 +80,7 @@ public partial class DividaViewModel : BaseViewModel
 
             Dividas = new ObservableCollection<Divida>(_todasDividas);
             TotalDividas = Dividas.Sum(d => d.Valor);
+            await LoadAsync();
         }
         finally
         {
@@ -152,6 +153,7 @@ public partial class DividaViewModel : BaseViewModel
             _paginaAtual++;
 
             TotalDividas = Dividas.Sum(d => d.Valor);
+            await LoadAsync();
         }
         finally
         {
@@ -211,4 +213,38 @@ public partial class DividaViewModel : BaseViewModel
         MostrarSomenteAtivas = !MostrarSomenteAtivas;
         await LoadAsync();
     }
+
+    [RelayCommand]
+    private async Task ExcluirDividaAsync(Divida divida)
+    {
+        if (divida == null)
+            return;
+
+        bool confirmar = await Shell.Current.DisplayAlert(
+            "Confirmação",
+            $"Deseja realmente excluir a dívida \"{divida.Descricao}\"?",
+            "Excluir",
+            "Cancelar");
+
+        if (!confirmar)
+            return;
+
+        try
+        {
+            await _dividaRepository.DeleteAsync(divida);
+
+            // Remove da lista em memória (sem precisar recarregar tudo)
+            Dividas.Remove(divida);
+
+            // Atualiza o total
+            TotalDividas = Dividas.Sum(d => d.Valor);
+
+            await Shell.Current.DisplayAlert("Sucesso", "Dívida excluída com sucesso.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Erro", $"Não foi possível excluir a dívida: {ex.Message}", "OK");
+        }
+    }
+
 }

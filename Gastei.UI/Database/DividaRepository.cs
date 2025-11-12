@@ -38,41 +38,56 @@ public class DividaRepository : IDividaRepository
 
     public async Task ReplicarFixasParaMesSeguinteAsync()
     {
-        var next = DateTime.Now.AddMonths(1);
-        var mesNext = next.Month;
-        var anoNext = next.Year;
+        var hoje = DateTime.Now;
+        var mesAtual = hoje.Month;
+        var anoAtual = hoje.Year;
 
-        // buscar todas fixas que existem no banco (independente do mês)
+        var proximoMes = mesAtual == 12 ? 1 : mesAtual + 1;
+        var proximoAno = mesAtual == 12 ? anoAtual + 1 : anoAtual;
+
+        // ✅ Só replica nos primeiros 3 dias do mês
+        if (hoje.Day > 3)
+            return;
+
+        // ✅ Verifica se já existem registros do próximo mês
+        var jaExiste = await _database.Table<Divida>()
+            .Where(d => d.ReferenciaMes == proximoMes && d.ReferenciaAno == proximoAno)
+            .CountAsync();
+
+        if (jaExiste > 0)
+            return;
+
+        // ✅ Busca apenas as FIXAS do mês atual
         var fixas = await _database.Table<Divida>()
-            .Where(d => d.Tipo == TipoDivida.Fixa)
+            .Where(d => d.Tipo == TipoDivida.Fixa && d.ReferenciaMes == mesAtual && d.ReferenciaAno == anoAtual)
             .ToListAsync();
+
+        if (!fixas.Any())
+            return;
 
         foreach (var f in fixas)
         {
-            // verificar se já existe uma cópia no mês seguinte com mesma descrição/valor/dia
-            var existe = await _database.Table<Divida>()
-                .Where(d => d.ReferenciaMes == mesNext && d.ReferenciaAno == anoNext && d.Descricao == f.Descricao && d.DiaVencimento == f.DiaVencimento)
-                .FirstOrDefaultAsync();
-
-            if (existe == null)
+            var nova = new Divida
             {
-                var nova = new Divida
-                {
-                    Descricao = f.Descricao,
-                    Valor = f.Valor,
-                    ValorEstimadoProximoMes = f.ValorEstimadoProximoMes,
-                    Tipo = f.Tipo,
-                    DiaVencimento = f.DiaVencimento,
-                    Ativa = f.Ativa,
-                    DataCriacao = DateTime.Now,
-                    ReferenciaMes = mesNext,
-                    ReferenciaAno = anoNext,
-                    // não copiar Id
-                };
-                await _database.InsertAsync(nova);
-            }
+                Descricao = f.Descricao,
+                Valor = f.Valor,
+                ValorEstimadoProximoMes = f.ValorEstimadoProximoMes,
+                Tipo = f.Tipo,
+                DiaVencimento = f.DiaVencimento,
+                Categoria = f.Categoria,
+                Subcategoria = f.Subcategoria,
+                Ativa = f.Ativa,
+                DataCriacao = DateTime.Now,
+                ReferenciaMes = proximoMes,
+                ReferenciaAno = proximoAno
+            };
+
+            await _database.InsertAsync(nova);
         }
+
+        System.Diagnostics.Debug.WriteLine($"✅ {fixas.Count} dívidas fixas replicadas para {proximoMes}/{proximoAno}");
     }
+
 
     public async Task<List<Divida>> GetAllAsync()
     {
@@ -129,7 +144,7 @@ public class DividaRepository : IDividaRepository
         var ano = DateTime.Now.Year;
 
         return await _database.Table<Divida>()
-            .Where(d => d.Ativa && d.ReferenciaMes == mes && d.ReferenciaAno == ano)
+            //.Where(d => d.Ativa && d.ReferenciaMes == mes && d.ReferenciaAno == ano)
             .OrderBy(d => d.DiaVencimento)
             .ToListAsync();
     }
