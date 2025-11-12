@@ -15,7 +15,9 @@ public partial class NovaDividaPage : ContentPage
             if (databaseService != null)
             {
                 var dividaRepository = new DividaRepository(databaseService);
-                BindingContext = new NovaDividaViewModel(dividaRepository);
+                var usuarioRepository = new UsuarioRepository(databaseService);
+
+                BindingContext = new NovaDividaViewModel(dividaRepository, usuarioRepository);
             }
             else
             {

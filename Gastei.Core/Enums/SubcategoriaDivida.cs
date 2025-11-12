@@ -3,41 +3,35 @@
 public enum SubcategoriaDivida
 {
     // Moradia
-    Agua,
-    Luz,
-    Aluguel,
-    Internet,
-    Gas,
+    Agua, Luz, Aluguel, Internet, Gas, Condominio, ManutencaoResidencia,
 
     // Alimentação
-    Supermercado,
-    Restaurante,
-    Lanche,
+    Supermercado, Restaurante, Lanche, Delivery, Bebidas,
 
     // Transporte
-    Gasolina,
-    Manutencao,
-    Estacionamento,
+    Gasolina, Manutencao, Estacionamento, TransportePublico, SeguroVeicular, Pedagio,
 
     // Lazer
-    Passeio,
-    Cinema,
-    Streaming,
+    Passeio, Cinema, Streaming, Viagem, Eventos, Jogos,
 
     // Educação
-    Curso,
-    Faculdade,
-    Livro,
+    Curso, Faculdade, Livro, MaterialEscolar, PosGraduacao, Certificacao,
 
     // Saúde
-    Farmacia,
-    Consulta,
-    Academia,
+    Farmacia, Consulta, Academia, Exame, PlanoDeSaude, Terapia,
 
     // Investimentos
-    Poupanca,
-    Acoes,
-    Cripto,
+    Poupanca, Acoes, Cripto, TesouroDireto, FundoImobiliario, CDB,
 
-    Outros
+    // Dívidas
+    CartaoDeCredito, Emprestimo, Financiamento, ChequeEspecial, Parcelamento, DividaPessoal,
+
+    // Compras
+    Roupas, Calçados, Eletronicos, Moveis, Presentes, Beleza,
+
+    // Emergências
+    ConsertoVeiculo, ConsertoResidencia, EmergenciaMedica, PerdaFinanceira, OutrosImprevistos,
+
+    // Outros
+    Doacao, Taxas, Servicos, Outros
 }

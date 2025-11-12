@@ -9,5 +9,8 @@ public enum CategoriaDivida
     Educacao,
     Saude,
     Investimento,
+    Dividas,
+    Compras,
+    Emergencias,
     Outros
 }

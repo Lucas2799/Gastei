@@ -21,6 +21,13 @@ public partial class DividasPage : ContentPage
     {
         base.OnAppearing();
 
+        var databaseService = GetDatabaseService();
+        if (databaseService != null)
+        {
+            var repo = new DividaRepository(databaseService);
+            await repo.ReplicarFixasParaMesSeguinteAsync();
+        }
+
         if (BindingContext is DividaViewModel vm)
             await vm.CarregarMesAtualAsync();
     }

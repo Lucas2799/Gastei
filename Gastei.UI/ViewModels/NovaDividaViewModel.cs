@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Gastei.Core.Entities;
 using Gastei.Core.Enums;
 using Gastei.Core.Interfaces;
+using Gastei.Core.Rules;
 
 namespace Gastei.UI.ViewModels;
 
@@ -10,6 +11,7 @@ namespace Gastei.UI.ViewModels;
 public partial class NovaDividaViewModel : BaseViewModel
 {
     private readonly IDividaRepository _dividaRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
 
     [ObservableProperty]
     private Divida _dividaSelecionada = new();
@@ -34,6 +36,13 @@ public partial class NovaDividaViewModel : BaseViewModel
         DividaSelecionada.Ativa = true;
     }
 
+    public NovaDividaViewModel(IDividaRepository dividaRepository, IUsuarioRepository usuarioRepository)
+    {
+        _dividaRepository = dividaRepository;
+        _usuarioRepository = usuarioRepository;
+        Title = "Nova Dívida";
+    }
+
     [RelayCommand]
     private async Task SalvarAsync()
     {
@@ -43,12 +52,44 @@ public partial class NovaDividaViewModel : BaseViewModel
             return;
         }
 
-        // ✅ Garantir controle mensal
-        if (DividaSelecionada.ReferenciaMes == 0)
-            DividaSelecionada.ReferenciaMes = DateTime.Now.Month;
+        var usuario = await _usuarioRepository.GetUsuarioAtivoAsync();
+        if (usuario == null)
+        {
+            await Shell.Current.DisplayAlert("Erro", "Usuário ativo não encontrado.", "OK");
+            return;
+        }
 
-        if (DividaSelecionada.ReferenciaAno == 0)
-            DividaSelecionada.ReferenciaAno = DateTime.Now.Year;
+        var perfil = usuario.Perfil;
+        var salario = usuario.SalarioBase;
+
+        // Todas as dívidas do mês atual
+        var dividasMes = await _dividaRepository.GetDividasPorMesAsync(DateTime.Now.Month, DateTime.Now.Year);
+        var dividasCategoria = dividasMes.Where(d => d.Categoria == DividaSelecionada.Categoria).ToList();
+
+        var totalCategoria = dividasCategoria.Sum(d => d.Valor);
+
+        // Limite permitido pelo perfil
+        var limitePercentual = PerfilFinanceiroRules.GetLimitePercentual(perfil, DividaSelecionada.Categoria);
+        var limiteValor = salario * limitePercentual;
+
+        // Valor total da categoria se incluir a nova dívida
+        var totalComNova = totalCategoria + DividaSelecionada.Valor;
+
+        if (totalComNova > limiteValor)
+        {
+            var percentualUsado = totalCategoria / salario;
+            var percentualNovo = totalComNova / salario;
+
+            var msg = $"⚠️ O limite da categoria '{DividaSelecionada.Categoria}' para o perfil '{perfil}' é de {limitePercentual:P0}.\n\n" +
+                      $"Atualmente você já está utilizando {percentualUsado:P1} do salário nessa categoria.\n" +
+                      $"Se adicionar essa dívida, passará a utilizar {percentualNovo:P1} — acima do permitido.";
+            await Shell.Current.DisplayAlert("Limite Atingido", msg, "OK");
+            return;
+        }
+
+        // Persistência normal
+        DividaSelecionada.ReferenciaMes = DateTime.Now.Month;
+        DividaSelecionada.ReferenciaAno = DateTime.Now.Year;
 
         if (DividaSelecionada.Id == 0)
             await _dividaRepository.InsertAsync(DividaSelecionada);
@@ -58,4 +99,5 @@ public partial class NovaDividaViewModel : BaseViewModel
         await Shell.Current.DisplayAlert("Sucesso", "Dívida salva com sucesso!", "OK");
         await Shell.Current.GoToAsync("..");
     }
+
 }

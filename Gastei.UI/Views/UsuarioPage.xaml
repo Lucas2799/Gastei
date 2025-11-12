@@ -87,11 +87,11 @@
                            FontAttributes="Bold"
                            HorizontalOptions="Center"/>
 
-                    <Label Text="• Equilibrado: 50% Necessidades, 30% Desejos, 20% Investimentos"
+                    <Label Text="• Equilibrado: 50% Essenciais, 30% Lazer, 20% Investimentos"
                            FontSize="12"/>
-                    <Label Text="• Investidor: 60% Essenciais, 20% Investimentos, 20% Lazer"
+                    <Label Text="• Investidor: 50% - 60% Essenciais, 30% - 40% Investimentos, 10% Lazer"
                            FontSize="12"/>
-                    <Label Text="• Conservador: 40% Essenciais, 30% Estilo de Vida, 20% Investimentos, 10% Metas"
+                    <Label Text="• Conservador: 60% Essenciais, 30% Lazer, 10% Investimentos"
                            FontSize="12"/>
                 </VerticalStackLayout>
             </Frame>
