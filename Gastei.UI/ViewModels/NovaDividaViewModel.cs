@@ -27,6 +27,11 @@ public partial class NovaDividaViewModel : BaseViewModel
     {
         _dividaRepository = dividaRepository;
         Title = "Nova Dívida";
+
+        // ✅ Preencher mês/ano automaticamente
+        DividaSelecionada.ReferenciaMes = DateTime.Now.Month;
+        DividaSelecionada.ReferenciaAno = DateTime.Now.Year;
+        DividaSelecionada.Ativa = true;
     }
 
     [RelayCommand]
@@ -37,6 +42,20 @@ public partial class NovaDividaViewModel : BaseViewModel
             await Shell.Current.DisplayAlert("Erro", "Preencha todos os campos obrigatórios", "OK");
             return;
         }
+
+        // ✅ Garantir que mês e ano sejam válidos
+        if (DividaSelecionada.Categoria == 0)
+            DividaSelecionada.Categoria = CategoriaDivida.Outros;
+
+        if (DividaSelecionada.Subcategoria == 0)
+            DividaSelecionada.Subcategoria = SubcategoriaDivida.Outros;
+
+        // ✅ Garantir controle mensal
+        if (DividaSelecionada.ReferenciaMes == 0)
+            DividaSelecionada.ReferenciaMes = DateTime.Now.Month;
+
+        if (DividaSelecionada.ReferenciaAno == 0)
+            DividaSelecionada.ReferenciaAno = DateTime.Now.Year;
 
         if (DividaSelecionada.Id == 0)
             await _dividaRepository.InsertAsync(DividaSelecionada);

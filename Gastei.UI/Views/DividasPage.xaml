@@ -8,7 +8,6 @@
     Title="Gerenciar Dívidas">
 
     <ContentPage.Resources>
-        <!-- Template de item reciclável -->
         <DataTemplate x:Key="DividaTemplate" x:DataType="entities:Divida">
             <Frame Margin="0,5"
                    Padding="12"
@@ -16,11 +15,7 @@
                    BorderColor="#333"
                    CornerRadius="10"
                    BackgroundColor="#1E1E1E">
-
-                <Grid RowDefinitions="Auto,Auto"
-                      ColumnDefinitions="*,Auto">
-
-                    <!-- Linha principal -->
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
                     <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10" VerticalOptions="Center">
                         <Label Text="{Binding Descricao}"
                                FontAttributes="Bold"
@@ -28,14 +23,12 @@
                                TextColor="White"
                                HorizontalOptions="StartAndExpand" />
 
-                        <!-- Status simplificado -->
                         <Label Text="{Binding Status}"
                                FontSize="13"
                                TextColor="{Binding StatusCor}"
                                VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
-                    <!-- Valor e detalhes -->
                     <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2" Margin="0,4,0,0">
                         <Label Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
                                FontSize="15"
@@ -43,14 +36,11 @@
                                FontAttributes="Bold" />
 
                         <Label Text="{Binding DiaVencimento, StringFormat='Vencimento: dia {0}'}"
-                               FontSize="12"
-                               TextColor="#AAA" />
+                               FontSize="12" TextColor="#AAA" />
 
                         <Label Text="{Binding Tipo, StringFormat='Tipo: {0}'}"
-                               FontSize="12"
-                               TextColor="#AAA" />
+                               FontSize="12" TextColor="#AAA" />
 
-                        <!-- Tags -->
                         <HorizontalStackLayout Spacing="6" Margin="0,3,0,0">
                             <Border StrokeThickness="0"
                                     BackgroundColor="{Binding CategoriaCor}"
@@ -73,7 +63,6 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
-                    <!-- Ações -->
                     <VerticalStackLayout Grid.Row="1" Grid.Column="1" VerticalOptions="Center" Spacing="4">
                         <Button Text="✏️"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
@@ -96,43 +85,45 @@
         </DataTemplate>
     </ContentPage.Resources>
 
-    <Grid Padding="20" RowDefinitions="Auto,*,Auto">
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- 🔹 Seletor de mês -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="10" HorizontalOptions="Center" Margin="0,0,0,10">
+            <Button Text="◀️" Command="{Binding MudarMesAnteriorCommand}" />
+            <Label Text="{Binding MesSelecionado, StringFormat='{}{0:D2}/'}"
+                   FontSize="18" FontAttributes="Bold" TextColor="White" />
+            <Label Text="{Binding AnoSelecionado}" FontSize="18" FontAttributes="Bold" TextColor="White" />
+            <Button Text="▶️" Command="{Binding MudarProximoMesCommand}" />
+        </HorizontalStackLayout>
+
         <!-- Header -->
-        <Frame BackgroundColor="{StaticResource PrimaryColor}" Grid.Row="0" Margin="0,0,0,10" CornerRadius="12">
+        <Frame Grid.Row="1"
+               BackgroundColor="{StaticResource PrimaryColor}" 
+               CornerRadius="12"
+               Margin="0,0,0,10">
             <VerticalStackLayout Spacing="5">
-                <Label Text="Total em Dívidas" 
-                       TextColor="White" 
-                       FontSize="16"
-                       HorizontalOptions="Center"/>
-                <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}" 
-                       TextColor="White" 
-                       FontSize="24" 
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"/>
+                <Label Text="Total em Dívidas" TextColor="White" FontSize="16" HorizontalOptions="Center" />
+                <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}"
+                       TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </Frame>
 
-        <!-- Lista otimizada -->
-        <CollectionView Grid.Row="1"
-                ItemsSource="{Binding Dividas}"
-                ItemTemplate="{StaticResource DividaTemplate}"
-                SelectionMode="None"
-                ItemSizingStrategy="MeasureFirstItem"
-                RemainingItemsThreshold="5"
-                RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}">
+        <!-- Lista -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Dividas}"
+                        ItemTemplate="{StaticResource DividaTemplate}"
+                        SelectionMode="None"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}">
             <CollectionView.Footer>
                 <StackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
                     <ActivityIndicator IsRunning="{Binding CarregandoMais}" IsVisible="{Binding CarregandoMais}" />
                     <Label Text="Carregando mais..." 
-                   IsVisible="{Binding CarregandoMais}" 
-                   FontSize="12" 
-                   TextColor="#AAA"
-                   HorizontalOptions="Center" />
-                    <!--<Label Text="Fim da lista" 
-                   IsVisible="{Binding TemMaisItens, Converter={StaticResource InverseBooleanConverter}}" 
-                   FontSize="12"
-                   TextColor="#777"
-                   HorizontalOptions="Center" />-->
+                           IsVisible="{Binding CarregandoMais}" 
+                           FontSize="12" 
+                           TextColor="#AAA"
+                           HorizontalOptions="Center" />
                 </StackLayout>
             </CollectionView.Footer>
         </CollectionView>
@@ -140,11 +131,10 @@
         <!-- Botão Nova Dívida -->
         <Button Text="+ Nova Dívida" 
                 Command="{Binding NovaDividaCommand}"
-                Grid.Row="2"
+                Grid.Row="3"
                 Margin="0,20,0,0"
                 HeightRequest="50"/>
 
-        <!-- Loading -->
         <ActivityIndicator IsVisible="{Binding IsBusy}" 
                            IsRunning="{Binding IsBusy}"
                            VerticalOptions="Center"

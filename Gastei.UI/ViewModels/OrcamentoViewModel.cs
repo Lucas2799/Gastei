@@ -49,7 +49,7 @@ public partial class OrcamentoViewModel : BaseViewModel
             SaldoDisponivel = SalarioBase - TotalGastos;
 
             var agrupado = dividasAtivas
-                .GroupBy(d => string.IsNullOrWhiteSpace(d.Categoria) ? "Outros" : d.Categoria)
+                .GroupBy(d => d.Categoria != 0 ? d.Categoria.ToString() : "Outros")
                 .Select(g => new CategoriaResumo
                 {
                     Categoria = g.Key,

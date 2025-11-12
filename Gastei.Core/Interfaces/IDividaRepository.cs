@@ -13,4 +13,8 @@ public interface IDividaRepository
     Task<List<Divida>> GetDividasAtivasAsync();
     Task<List<Divida>> GetDividasPorTipoAsync(TipoDivida tipo);
     Task<List<Divida>> GetDividasPorDiaVencimentoAsync(int dia);
+
+    Task<List<Divida>> GetDividasPorMesAsync(int mes, int ano);
+    Task ReplicarFixasParaMesSeguinteAsync();
+  
 }

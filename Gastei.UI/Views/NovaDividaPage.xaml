@@ -16,19 +16,13 @@
             <Entry Text="{Binding DividaSelecionada.Descricao}" Placeholder="Ex: Cartão de crédito" />
 
             <Label Text="Valor (R$)" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.Valor}" 
-                   Keyboard="Numeric"
-                   Placeholder="0,00" />
+            <Entry Text="{Binding DividaSelecionada.Valor}" Keyboard="Numeric" Placeholder="0,00" />
 
             <Label Text="Valor Estimado Próximo Mês (opcional)" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.ValorEstimadoProximoMes}" 
-                   Keyboard="Numeric"
-                   Placeholder="0,00" />
+            <Entry Text="{Binding DividaSelecionada.ValorEstimadoProximoMes}" Keyboard="Numeric" Placeholder="0,00" />
 
             <Label Text="Dia de Vencimento" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.DiaVencimento}" 
-                   Keyboard="Numeric"
-                   Placeholder="Ex: 10" />
+            <Entry Text="{Binding DividaSelecionada.DiaVencimento}" Keyboard="Numeric" Placeholder="Ex: 10" />
 
             <Label Text="Tipo de Dívida" FontAttributes="Bold" />
             <Picker ItemsSource="{Binding TiposDisponiveis}" 
@@ -37,18 +31,36 @@
 
             <Label Text="Categoria" FontAttributes="Bold" />
             <Picker ItemsSource="{Binding CategoriasDisponiveis}"
-        SelectedItem="{Binding DividaSelecionada.Categoria}"
-        Title="Selecione uma categoria" />
+                    SelectedItem="{Binding DividaSelecionada.Categoria}"
+                    Title="Selecione uma categoria" />
 
             <Label Text="Subcategoria" FontAttributes="Bold" />
             <Picker ItemsSource="{Binding SubcategoriasDisponiveis}"
-        SelectedItem="{Binding DividaSelecionada.Subcategoria}"
-        Title="Selecione uma subcategoria" />
+                    SelectedItem="{Binding DividaSelecionada.Subcategoria}"
+                    Title="Selecione uma subcategoria" />
 
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                 <Label Text="Ativa" FontAttributes="Bold" VerticalOptions="Center"/>
                 <Switch IsToggled="{Binding DividaSelecionada.Ativa}" />
             </HorizontalStackLayout>
+
+            <!-- 🆕 BLOCO DE CONTROLE MENSAL -->
+            <Frame BorderColor="#ccc" Padding="10" CornerRadius="10">
+                <VerticalStackLayout>
+                    <Label Text="Referência do Mês/Ano" FontAttributes="Bold" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Mês:" VerticalOptions="Center"/>
+                        <Entry Text="{Binding DividaSelecionada.ReferenciaMes}" WidthRequest="60" Keyboard="Numeric" Placeholder="1-12"/>
+
+                        <Label Text="Ano:" VerticalOptions="Center"/>
+                        <Entry Text="{Binding DividaSelecionada.ReferenciaAno}" WidthRequest="80" Keyboard="Numeric" Placeholder="2025"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="(Deixe em branco para usar o mês/ano atual automaticamente)"
+                           FontSize="11" TextColor="#888" />
+                </VerticalStackLayout>
+            </Frame>
 
             <Button Text="💾 Salvar Dívida"
                     Command="{Binding SalvarCommand}"
@@ -57,12 +69,10 @@
                     TextColor="White"
                     CornerRadius="10" />
 
-            <ActivityIndicator 
-                IsVisible="{Binding IsBusy}"
-                IsRunning="{Binding IsBusy}"
-                HorizontalOptions="Center" 
-                VerticalOptions="Center" />
-
+            <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                               IsRunning="{Binding IsBusy}" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

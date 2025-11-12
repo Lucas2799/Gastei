@@ -30,6 +30,12 @@ public partial class DividaViewModel : BaseViewModel
     private int _paginaAtual = 0;
     private List<Divida> _todasDividas = new();
 
+    [ObservableProperty]
+    private int mesSelecionado = DateTime.Now.Month;
+
+    [ObservableProperty]
+    private int anoSelecionado = DateTime.Now.Year;
+
     public IRelayCommand CarregarMaisCommand { get; }
 
     public DividaViewModel(IDividaRepository dividaRepository)
@@ -56,6 +62,65 @@ public partial class DividaViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
+    public async Task CarregarMesAtualAsync()
+    {
+        if (IsBusy) return;
+        IsBusy = true;
+
+        try
+        {
+            _todasDividas = await _dividaRepository.GetDividasPorMesAsync(MesSelecionado, AnoSelecionado);
+
+            foreach (var d in _todasDividas)
+            {
+                d.Status = d.Ativa ? "✅ Ativa" : "❌ Inativa";
+                d.StatusCor = d.Ativa ? Colors.Green : Colors.Red;
+            }
+
+            Dividas = new ObservableCollection<Divida>(_todasDividas);
+            TotalDividas = Dividas.Sum(d => d.Valor);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+
+    [RelayCommand]
+    private async Task MudarMesAnteriorAsync()
+    {
+        if (MesSelecionado == 1)
+        {
+            MesSelecionado = 12;
+            AnoSelecionado--;
+        }
+        else
+        {
+            MesSelecionado--;
+        }
+
+        await CarregarMesAtualAsync();
+    }
+
+    [RelayCommand]
+    private async Task MudarProximoMesAsync()
+    {
+        if (MesSelecionado == 12)
+        {
+            MesSelecionado = 1;
+            AnoSelecionado++;
+        }
+        else
+        {
+            MesSelecionado++;
+        }
+
+        await CarregarMesAtualAsync();
+    }
+
+
     public async Task CarregarDividasAsync()
     {
         if (IsBusy) return;
@@ -73,10 +138,10 @@ public partial class DividaViewModel : BaseViewModel
                 d.StatusCor = d.Ativa ? Colors.Green : Colors.Red;
                 d.CategoriaCor = d.Categoria switch
                 {
-                    "Moradia" => Color.FromArgb("#1976D2"),
-                    "Lazer" => Color.FromArgb("#E91E63"),
-                    "Alimentação" => Color.FromArgb("#4CAF50"),
-                    "Transporte" => Color.FromArgb("#FF9800"),
+                    Core.Enums.CategoriaDivida.Moradia => Color.FromArgb("#1976D2"),
+                    Core.Enums.CategoriaDivida.Lazer => Color.FromArgb("#E91E63"),
+                    Core.Enums.CategoriaDivida.Alimentacao => Color.FromArgb("#4CAF50"),
+                    Core.Enums.CategoriaDivida.Transporte => Color.FromArgb("#FF9800"),
                     _ => Color.FromArgb("#9E9E9E")
                 };
             }

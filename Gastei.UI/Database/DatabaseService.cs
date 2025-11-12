@@ -35,6 +35,9 @@ public class DatabaseService
             await _database.CreateTableAsync<Usuario>();
             await _database.CreateTableAsync<Divida>(); // ← NOVA TABELA
 
+            await EnsureColumnExistsAsync("Dividas", "ReferenciaMes", "INTEGER", "0");
+            await EnsureColumnExistsAsync("Dividas", "ReferenciaAno", "INTEGER", "0");
+
             // Verificar se já existe algum usuário
             var countUsuario = await _database.Table<Usuario>().CountAsync();
 
@@ -54,43 +57,28 @@ public class DatabaseService
                 await _database.InsertAsync(usuarioPadrao);
             }
 
-            // Adicionar algumas dívidas de exemplo (opcional)
-            var countDividas = await _database.Table<Divida>().CountAsync();
-            if (countDividas == 0)
-            {
-                var dividasExemplo = new List<Divida>
-            {
-                new Divida
-                {
-                    Descricao = "Aluguel",
-                    Valor = 1300m,
-                    Tipo = TipoDivida.Fixa,
-                    DiaVencimento = 10,
-                    Ativa = true,
-                    DataCriacao = DateTime.Now
-                },
-                new Divida
-                {
-                    Descricao = "Internet",
-                    Valor = 99.90m,
-                    Tipo = TipoDivida.Fixa,
-                    DiaVencimento = 10,
-                    Ativa = true,
-                    DataCriacao = DateTime.Now
-                }
-            };
-
-                foreach (var divida in dividasExemplo)
-                {
-                    await _database.InsertAsync(divida);
-                }
-            }
-
             _initialized = true;
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Erro ao inicializar banco: {ex.Message}");
+        }
+    }
+
+    private async Task EnsureColumnExistsAsync(string table, string column, string type, string defaultValue)
+    {
+        try
+        {
+            var info = await _database.QueryAsync<Dictionary<string, object>>($"PRAGMA table_info('{table}');");
+            var has = info.Any(row => row.ContainsKey("name") && row["name"]?.ToString() == column);
+            if (!has)
+            {
+                await _database.ExecuteAsync($"ALTER TABLE {table} ADD COLUMN {column} {type} DEFAULT {defaultValue};");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Erro EnsureColumnExists {table}.{column}: {ex.Message}");
         }
     }
 
