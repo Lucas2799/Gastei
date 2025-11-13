@@ -29,4 +29,10 @@ public partial class MainPage : ContentPage
         var page = ServiceHelper.GetService<OrcamentoPage>();
         await Navigation.PushAsync(page);
     }
+
+    private async void OnRelatorioClicked(object sender, EventArgs e)
+    {
+        var page = ServiceHelper.GetService<RelatoriosPage>();
+        await Navigation.PushAsync(page);
+    }
 }

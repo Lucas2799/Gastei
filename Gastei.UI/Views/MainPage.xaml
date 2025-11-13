@@ -70,6 +70,7 @@
                         <Label Text="📈" FontSize="32" HorizontalOptions="Center"/>
                         <Label Text="Relatórios" FontSize="14" HorizontalOptions="Center"/>
                         <Button Text="Ver" 
+                                Clicked="OnRelatorioClicked"
                                 BackgroundColor="#9C27B0"
                                 FontSize="12"
                                 HeightRequest="40"/>

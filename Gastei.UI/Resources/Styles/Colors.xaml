@@ -35,4 +35,13 @@
     <Color x:Key="EntryPlaceholderColor">#999999</Color>
     <Color x:Key="EntryPlaceholderColorDark">#888888</Color>
 
+    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="#3E7BFA" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
 </ResourceDictionary>

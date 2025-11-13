@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Gastei.UI.Views.RelatoriosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Relatórios">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <!-- FILTROS -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Filtros" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="White" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <Picker Title="Mês"
+                                WidthRequest="150"
+                                ItemsSource="{Binding Meses}"
+                                SelectedItem="{Binding MesSelecionado}" />
+
+                        <Picker Title="Ano"
+                                WidthRequest="120"
+                                ItemsSource="{Binding Anos}"
+                                SelectedItem="{Binding AnoSelecionado}" />
+                    </HorizontalStackLayout>
+
+                    <Button Text="Atualizar"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            BackgroundColor="#3E7BFA"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Command="{Binding CarregarTudoCommand}" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- TENDÊNCIA -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Tendência de Gastos (Últimos Meses)"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <CollectionView ItemsSource="{Binding GraficoTendencia}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <VerticalStackLayout Padding="5,8">
+                                    <Label Text="{Binding MesAno}"
+                                           FontSize="15"
+                                           TextColor="White"/>
+                                    <BoxView HeightRequest="6"
+                                             BackgroundColor="#4CAF50"
+                                             HorizontalOptions="Start"
+                                             WidthRequest="{Binding Valor}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- CRESCIMENTO POR CATEGORIA -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Crescimento por Categoria"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <CollectionView ItemsSource="{Binding CrescimentoCategorias}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10" ColumnDefinitions="*,Auto">
+
+                                    <Label Text="{Binding Categoria}"
+                                           FontSize="15"
+                                           TextColor="White"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding CrescimentoPercentual, StringFormat='{0}%'}"
+                                           FontAttributes="Bold"
+                                           TextColor="Lime"
+                                           FontSize="15"
+                                           VerticalTextAlignment="Center" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- DISTRIBUIÇÃO REAL x IDEAL -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Distribuição (Real x Ideal)"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <CollectionView ItemsSource="{Binding DistribuicaoCategorias}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10" ColumnDefinitions="*,Auto,Auto">
+
+                                    <Label Text="{Binding Categoria}"
+                                           FontSize="15"
+                                           TextColor="White"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding RealPercent, StringFormat='{0:P0}'}"
+                                           TextColor="Lime"
+                                           FontSize="15"
+                                           Margin="10,0"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding IdealPercent, StringFormat='{0:P0}'}"
+                                           TextColor="#BBBBBB"
+                                           FontSize="15"
+                                           Margin="20,0,0,0"
+                                           VerticalTextAlignment="Center" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- RANKING -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Ranking de Gastos"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <CollectionView ItemsSource="{Binding RankingCategorias}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10" ColumnDefinitions="Auto,*,Auto">
+
+                                    <Label Text="{Binding Posicao}"
+                                           TextColor="#BBBBBB"
+                                           FontSize="14"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Categoria}"
+                                           FontSize="15"
+                                           TextColor="White"
+                                           Margin="10,0"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
+                                           TextColor="#FFFFFF"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           VerticalTextAlignment="Center" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ALERTAS -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Alertas"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <CollectionView ItemsSource="{Binding Alertas}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="#332B2B"
+                                       CornerRadius="10"
+                                       Padding="12"
+                                       Margin="0,5">
+
+                                    <Label Text="{Binding}"
+                                           FontSize="14"
+                                           TextColor="Orange" />
+
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- RESUMO ANUAL -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="8">
+
+                    <Label Text="Resumo Anual"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+                    <Label Text="{Binding TotalAno, StringFormat='Total: R$ {0:F2}'}"
+                           FontSize="15"
+                           TextColor="White" />
+
+                    <Label Text="{Binding MesMaisCaro}"
+                           FontSize="15"
+                           TextColor="White" />
+
+                    <Label Text="{Binding MesMaisBarato}"
+                           FontSize="15"
+                           TextColor="White" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
