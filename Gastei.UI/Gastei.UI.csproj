@@ -17,7 +17,7 @@
 
 		<!-- Configurações Android -->
 		<ApplicationTitle>Gastei</ApplicationTitle>
-		<ApplicationId>com.companyname.gastei</ApplicationId>
+		<ApplicationId>Gastei</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
@@ -27,6 +27,12 @@
 		<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
 		<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\splash_logo.png" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\splash_screen.xml" />
+	  <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Pacotes MAUI ESSENCIAIS -->

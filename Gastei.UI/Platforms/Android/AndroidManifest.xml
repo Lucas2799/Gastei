@@ -6,5 +6,7 @@
 
     <application 
         android:label="Gastei"
-        android:icon="@mipmap/ic_launcher" />
+        android:icon="@mipmap/ic_launcher" 
+        android:theme="@style/Maui.SplashTheme"/>
+        
 </manifest>
