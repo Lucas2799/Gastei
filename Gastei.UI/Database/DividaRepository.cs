@@ -1,7 +1,8 @@
-﻿using SQLite;
-using Gastei.Core.Interfaces;
-using Gastei.Core.Entities;
+﻿using Gastei.Core.Entities;
 using Gastei.Core.Enums;
+using Gastei.Core.Interfaces;
+using Gastei.Core.Rules;
+using SQLite;
 
 namespace Gastei.UI.Database;
 
@@ -34,6 +35,16 @@ public class DividaRepository : IDividaRepository
         return await _database.Table<Divida>()
             .Where(d => d.Fixa && d.Ativa)
             .ToListAsync();
+    }
+
+    public async Task<decimal> GetSumValorByBucketAsync(int mes, int ano, string bucketName)
+    {
+        // carrega todas do mês e filtra buckets (se você armazenar Categoria como enum -> ToString)
+        var todas = await GetDividasPorMesAsync(mes, ano); // implemente este método se ainda não
+        var soma = todas
+            .Where(d => PerfilFinanceiroRules.GetBucketName(d.Categoria) == bucketName && d.Ativa)
+            .Sum(d => d.Valor);
+        return soma;
     }
 
     public async Task ReplicarFixasParaMesSeguinteAsync()

@@ -16,5 +16,6 @@ public interface IDividaRepository
 
     Task<List<Divida>> GetDividasPorMesAsync(int mes, int ano);
     Task ReplicarFixasParaMesSeguinteAsync();
-  
+    Task<decimal> GetSumValorByBucketAsync(int mes, int ano, string bucketName);
+
 }

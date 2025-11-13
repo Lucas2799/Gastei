@@ -31,6 +31,21 @@
                     <Label Text="{Binding TotalGastos, StringFormat='Total de Gastos: R$ {0:F2}'}"
                FontSize="13" TextColor="#DDD"/>
 
+                    <!-- Progresso total do limite -->
+                    <VerticalStackLayout Margin="0,10,0,0">
+                        <Label Text="Uso do Limite Total" 
+           FontSize="14" 
+           TextColor="#DDD"/>
+
+                        <ProgressBar Progress="{Binding PercentualTotal}" 
+                 HeightRequest="8" 
+                 Margin="0,4,0,0"/>
+
+                        <Label Text="{Binding PercentualTotal, StringFormat='{0:P0} utilizado'}" 
+           FontSize="12" 
+           TextColor="#AAA"/>
+                    </VerticalStackLayout>
+
                     <!-- Novo Border -->
                     <Border Stroke="#555"
                 StrokeThickness="1"

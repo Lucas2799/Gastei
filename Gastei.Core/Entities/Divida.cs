@@ -23,8 +23,8 @@ public class Divida
     [Ignore] public Color StatusCor { get; set; } = Colors.White;
     [Ignore] public Color CategoriaCor { get; set; } = Colors.Gray;
 
-    public int ReferenciaMes { get; set; } = 0;
-    public int ReferenciaAno { get; set; } = 0;
+    public int? ReferenciaMes { get; set; } 
+    public int? ReferenciaAno { get; set; } 
 
     public DateTime DataCriacao { get; set; }
     public DateTime? DataAtualizacao { get; set; }

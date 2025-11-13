@@ -118,6 +118,33 @@ public static class PerfilFinanceiroRules
         return result;
     }
 
+    // retorna o percentual (decimal) do bucket (Essenciais/Investimentos/Lazer) para o perfil
+    public static decimal GetBucketPercent(PerfilFinanceiro perfil, string bucketName)
+    {
+        if (!BucketPercents.TryGetValue(perfil, out var buckets))
+            throw new ArgumentException(nameof(perfil));
+
+        return bucketName switch
+        {
+            "Essenciais" => buckets.Essenciais,
+            "Investimentos" => buckets.Investimentos,
+            "Lazer" => buckets.Lazer,
+            _ => 0m
+        };
+    }
+
+    // retorna lista de categorias pertencentes ao bucket (string bucketName -> CategoriaDivida[])
+    public static List<CategoriaDivida> GetCategoriasPorBucket(string bucketName)
+    {
+        return Enum.GetValues(typeof(CategoriaDivida))
+                   .Cast<CategoriaDivida>()
+                   .Where(c => BucketOf(c) == bucketName)
+                   .ToList();
+    }
+
+    // bucket name da categoria (já tem BucketOf, usado abaixo)
+    public static string GetBucketName(CategoriaDivida categoria) => BucketOf(categoria);
+
     // Helper para pegar apenas um limite
     public static decimal GetLimitePercentual(PerfilFinanceiro perfil, CategoriaDivida categoria)
     {

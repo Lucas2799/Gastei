@@ -52,49 +52,62 @@ public partial class NovaDividaViewModel : BaseViewModel
             return;
         }
 
+        // pegar usuário e salário
         var usuario = await _usuarioRepository.GetUsuarioAtivoAsync();
         if (usuario == null)
         {
-            await Shell.Current.DisplayAlert("Erro", "Usuário ativo não encontrado.", "OK");
+            await Shell.Current.DisplayAlert("Erro", "Usuário não encontrado", "OK");
             return;
         }
 
         var perfil = usuario.Perfil;
         var salario = usuario.SalarioBase;
 
-        // Todas as dívidas do mês atual
-        var dividasMes = await _dividaRepository.GetDividasPorMesAsync(DateTime.Now.Month, DateTime.Now.Year);
-        var dividasCategoria = dividasMes.Where(d => d.Categoria == DividaSelecionada.Categoria).ToList();
+        // bucket da categoria da dívida
+        var bucket = PerfilFinanceiroRules.GetBucketName(DividaSelecionada.Categoria);
 
-        var totalCategoria = dividasCategoria.Sum(d => d.Valor);
+        // bucket percentual e limite em reais
+        var bucketPct = PerfilFinanceiroRules.GetBucketPercent(perfil, bucket);
+        var bucketLimite = salario * bucketPct;
 
-        // Limite permitido pelo perfil
-        var limitePercentual = PerfilFinanceiroRules.GetLimitePercentual(perfil, DividaSelecionada.Categoria);
-        var limiteValor = usuario.SalarioBase * limitePercentual;
+        // soma atual do bucket no mês/ano da dívida (você deve ter mes/ano na Divida ou DataReferencia)
+        var mes = DividaSelecionada.ReferenciaMes ?? DateTime.Now.Month; // adapte conforme campo
+        var ano = DividaSelecionada.ReferenciaAno ?? DateTime.Now.Year;
 
-        // Valor total da categoria se incluir a nova dívida
-        var totalComNova = totalCategoria + DividaSelecionada.Valor;
+        var somaAtualBucket = await _dividaRepository.GetSumValorByBucketAsync(mes, ano, bucket);
 
-        if (totalComNova > limiteValor)
+        var novoTotalBucket = somaAtualBucket + DividaSelecionada.Valor;
+
+        if (novoTotalBucket > bucketLimite)
         {
-            var percentualUsado = totalCategoria / salario;
-            var percentualNovo = totalComNova / salario;
+            // calcular fatia "ideal" da categoria para mostrar sugestão
+            var categoriasNoBucket = PerfilFinanceiroRules.GetCategoriasPorBucket(bucket);
+            var idealPorCategoriaPct = bucketPct / categoriasNoBucket.Count;
+            var idealPorCategoriaValor = salario * idealPorCategoriaPct;
 
-            var msg = $"⚠️ O limite da categoria '{DividaSelecionada.Categoria}' para o perfil '{perfil}' é de {limitePercentual:P0}.\n\n" +
-                      $"Atualmente você já está utilizando {percentualUsado:P1} do salário nessa categoria.\n" +
-                      $"Se adicionar essa dívida, passará a utilizar {percentualNovo:P1} — acima do permitido.";
-            await Shell.Current.DisplayAlert("Limite Atingido", msg, "OK");
+            var mensagem =
+                $"Ao adicionar essa dívida, o total do bucket '{bucket}' ficaria em R$ {novoTotalBucket:F2},\n" +
+                $"limite do bucket: R$ {bucketLimite:F2}.\n\n" +
+                $"Sugestão: cada categoria idealmente tem ~{idealPorCategoriaPct:P2} ({idealPorCategoriaValor:C}).";
+
+            await Shell.Current.DisplayAlert("Limite do bucket excedido", mensagem, "OK");
             return;
         }
 
-        // Persistência normal
-        DividaSelecionada.ReferenciaMes = DateTime.Now.Month;
-        DividaSelecionada.ReferenciaAno = DateTime.Now.Year;
-
+        // tudo certo: inserir/atualizar (ajuste DataCriacao/Referencia)
         if (DividaSelecionada.Id == 0)
+        {
+            DividaSelecionada.DataCriacao = DateTime.Now;
+            // garantir mes/ano de referência
+            DividaSelecionada.ReferenciaMes = mes;
+            DividaSelecionada.ReferenciaAno = ano;
             await _dividaRepository.InsertAsync(DividaSelecionada);
+        }
         else
+        {
+            DividaSelecionada.DataAtualizacao = DateTime.Now;
             await _dividaRepository.UpdateAsync(DividaSelecionada);
+        }
 
         await Shell.Current.DisplayAlert("Sucesso", "Dívida salva com sucesso!", "OK");
         await Shell.Current.GoToAsync("..");
