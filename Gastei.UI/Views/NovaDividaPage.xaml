@@ -6,73 +6,171 @@
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
     xmlns:enums="clr-namespace:Gastei.Core.Enums;assembly=Gastei.Core"
-    Title="Nova Dívida"
-    x:DataType="viewmodels:NovaDividaViewModel">
+    x:DataType="viewmodels:NovaDividaViewModel"
+    BackgroundColor="#121212"
+    Title="Nova Dívida">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <Label Text="Descrição" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.Descricao}" Placeholder="Ex: Cartão de crédito" />
+            <!-- HEADER -->
+            <Frame Padding="20" CornerRadius="20" HasShadow="True">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#6a11cb" Offset="0.0" />
+                        <GradientStop Color="#2575fc" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
 
-            <Label Text="Valor (R$)" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.Valor}" Keyboard="Numeric" Placeholder="0,00" />
-
-            <Label Text="Valor Estimado Próximo Mês (opcional)" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.ValorEstimadoProximoMes}" Keyboard="Numeric" Placeholder="0,00" />
-
-            <Label Text="Dia de Vencimento" FontAttributes="Bold" />
-            <Entry Text="{Binding DividaSelecionada.DiaVencimento}" Keyboard="Numeric" Placeholder="Ex: 10" />
-
-            <Label Text="Tipo de Dívida" FontAttributes="Bold" />
-            <Picker ItemsSource="{Binding TiposDisponiveis}" 
-                    SelectedItem="{Binding DividaSelecionada.Tipo}"
-                    Title="Selecione o tipo" />
-
-            <Label Text="Categoria" FontAttributes="Bold" />
-            <Picker ItemsSource="{Binding CategoriasDisponiveis}"
-                    SelectedItem="{Binding DividaSelecionada.Categoria}"
-                    Title="Selecione uma categoria" />
-
-            <Label Text="Subcategoria" FontAttributes="Bold" />
-            <Picker ItemsSource="{Binding SubcategoriasDisponiveis}"
-                    SelectedItem="{Binding DividaSelecionada.Subcategoria}"
-                    Title="Selecione uma subcategoria" />
-
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                <Label Text="Ativa" FontAttributes="Bold" VerticalOptions="Center"/>
-                <Switch IsToggled="{Binding DividaSelecionada.Ativa}" />
-            </HorizontalStackLayout>
-
-            <!-- 🆕 BLOCO DE CONTROLE MENSAL -->
-            <Frame BorderColor="#ccc" Padding="10" CornerRadius="10">
-                <VerticalStackLayout>
-                    <Label Text="Referência do Mês/Ano" FontAttributes="Bold" />
-
-                    <HorizontalStackLayout Spacing="10">
-                        <Label Text="Mês:" VerticalOptions="Center"/>
-                        <Entry Text="{Binding DividaSelecionada.ReferenciaMes}" WidthRequest="60" Keyboard="Numeric" Placeholder="1-12"/>
-
-                        <Label Text="Ano:" VerticalOptions="Center"/>
-                        <Entry Text="{Binding DividaSelecionada.ReferenciaAno}" WidthRequest="80" Keyboard="Numeric" Placeholder="2025"/>
-                    </HorizontalStackLayout>
-
-                    <Label Text="(Deixe em branco para usar o mês/ano atual automaticamente)"
-                           FontSize="11" TextColor="#888" />
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="Nova Dívida" FontSize="26" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Preencha os dados abaixo"
+                           FontSize="14" TextColor="#DDDDDD"
+                           HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Frame>
 
+
+            <!-- 🔹 INFORMAÇÕES BÁSICAS -->
+            <Label Text="Informações Básicas" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Descrição -->
+                    <Label Text="Descrição" TextColor="#AAA" />
+                    <Border StrokeThickness="0" BackgroundColor="#292929" StrokeShape="RoundRectangle 10" Padding="10">
+                        <Entry Text="{Binding DividaSelecionada.Descricao}"
+                               Placeholder="Ex: Cartão de crédito"
+                               TextColor="White"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <!-- Valor -->
+                    <Label Text="Valor (R$)" TextColor="#AAA" />
+                    <Border StrokeThickness="0" BackgroundColor="#292929" StrokeShape="RoundRectangle 10" Padding="10">
+                        <Entry Text="{Binding DividaSelecionada.Valor}"
+                               Keyboard="Numeric"
+                               Placeholder="0,00"
+                               TextColor="White"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <!-- Valor próximo mês -->
+                    <Label Text="Valor Estimado Próximo Mês (opcional)" TextColor="#AAA" />
+                    <Border StrokeThickness="0" BackgroundColor="#292929" StrokeShape="RoundRectangle 10" Padding="10">
+                        <Entry Text="{Binding DividaSelecionada.ValorEstimadoProximoMes}"
+                               Keyboard="Numeric"
+                               Placeholder="0,00"
+                               TextColor="White"
+                               BackgroundColor="Transparent"/>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+
+            <!-- 🔹 DETALHES -->
+            <Label Text="Detalhes" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Tipo -->
+                    <Label Text="Tipo" TextColor="#AAA" />
+                    <Picker ItemsSource="{Binding TiposDisponiveis}"
+                            SelectedItem="{Binding DividaSelecionada.Tipo}"
+                            Title="Selecione o tipo"
+                            TextColor="White"
+                            TitleColor="#888"/>
+
+                    <!-- Categoria -->
+                    <Label Text="Categoria" TextColor="#AAA" />
+                    <Picker ItemsSource="{Binding CategoriasDisponiveis}"
+                            SelectedItem="{Binding DividaSelecionada.Categoria}"
+                            Title="Selecione uma categoria"
+                            TextColor="White"
+                            TitleColor="#888"/>
+
+                    <!-- Subcategoria -->
+                    <Label Text="Subcategoria" TextColor="#AAA" />
+                    <Picker ItemsSource="{Binding SubcategoriasDisponiveis}"
+                            SelectedItem="{Binding DividaSelecionada.Subcategoria}"
+                            Title="Selecione uma subcategoria"
+                            TextColor="White"
+                            TitleColor="#888"/>
+
+                    <!-- Ativa -->
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Label Text="Ativa" TextColor="#AAA"/>
+                        <Switch IsToggled="{Binding DividaSelecionada.Ativa}" />
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+
+            <!-- 🔹 REFERÊNCIA MENSAL -->
+            <Label Text="Referência do Mês/Ano"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"/>
+
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="12" Padding="15">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Selecione o mês e ano desta dívida."
+                           FontSize="12" TextColor="#888"/>
+
+                    <HorizontalStackLayout Spacing="20">
+
+                        <!-- Mês -->
+                        <VerticalStackLayout>
+                            <Label Text="Mês" TextColor="#AAA"/>
+                            <Border BackgroundColor="#292929" Padding="10" StrokeShape="RoundRectangle 10">
+                                <Entry Text="{Binding DividaSelecionada.ReferenciaMes}"
+                                       WidthRequest="80"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="White"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Ano -->
+                        <VerticalStackLayout>
+                            <Label Text="Ano" TextColor="#AAA"/>
+                            <Border BackgroundColor="#292929" Padding="10" StrokeShape="RoundRectangle 10">
+                                <Entry Text="{Binding DividaSelecionada.ReferenciaAno}"
+                                       WidthRequest="100"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="White"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+
+            <!-- BOTÃO -->
             <Button Text="💾 Salvar Dívida"
                     Command="{Binding SalvarCommand}"
-                    HeightRequest="50"
-                    BackgroundColor="{StaticResource PrimaryColor}"
+                    HeightRequest="55"
+                    BackgroundColor="#6a11cb"
                     TextColor="White"
-                    CornerRadius="10" />
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    FontSize="18"/>
 
-            <ActivityIndicator IsVisible="{Binding IsBusy}" 
-                               IsRunning="{Binding IsBusy}" 
-                               HorizontalOptions="Center" 
-                               VerticalOptions="Center" />
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center" />
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

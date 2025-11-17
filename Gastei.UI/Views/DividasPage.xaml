@@ -1,157 +1,229 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="Gastei.UI.Views.DividasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
-    Title="Gerenciar Dívidas">
+    BackgroundColor="#121212"
+    Title="Dívidas">
 
     <ContentPage.Resources>
+
+        <!-- TEMPLATE DOS CARDS DE DÍVIDA -->
         <DataTemplate x:Key="DividaTemplate" x:DataType="entities:Divida">
-            <Frame Margin="0,5"
-                   Padding="12"
-                   HasShadow="False"
-                   BorderColor="#333"
-                   CornerRadius="10"
-                   BackgroundColor="#1E1E1E">
-                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
-                    <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10" VerticalOptions="Center">
+            <Frame CornerRadius="18"
+                   Padding="20"
+                   Margin="0,10"
+                   BackgroundColor="#1E1E1E"
+                   HasShadow="True">
+
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
+                        CommandParameter="{Binding .}"
+                        NumberOfTapsRequired="1"/>
+                </Frame.GestureRecognizers>
+
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+
+                    <!-- DESCRIÇÃO + STATUS -->
+                    <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10">
                         <Label Text="{Binding Descricao}"
+                               FontSize="18"
                                FontAttributes="Bold"
-                               FontSize="16"
-                               TextColor="White"
-                               HorizontalOptions="StartAndExpand" />
+                               TextColor="White"/>
 
                         <Label Text="{Binding Status}"
-                               FontSize="13"
                                TextColor="{Binding StatusCor}"
-                               VerticalOptions="Center" />
+                               FontSize="14"
+                               VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
-                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2" Margin="0,4,0,0">
+                    <!-- DETALHES -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4" Margin="0,10,0,0">
                         <Label Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
-                               FontSize="15"
                                TextColor="#F5F5F5"
-                               FontAttributes="Bold" />
+                               FontSize="17"
+                               FontAttributes="Bold"/>
 
                         <Label Text="{Binding DiaVencimento, StringFormat='Vencimento: dia {0}'}"
-                               FontSize="12" TextColor="#AAA" />
+                               TextColor="#AAA"
+                               FontSize="12"/>
 
                         <Label Text="{Binding Tipo, StringFormat='Tipo: {0}'}"
-                               FontSize="12" TextColor="#AAA" />
+                               TextColor="#AAA"
+                               FontSize="12"/>
 
-                        <HorizontalStackLayout Spacing="6" Margin="0,3,0,0">
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="{Binding CategoriaCor}"
-                                    StrokeShape="RoundRectangle 8">
+                        <HorizontalStackLayout Spacing="6" Margin="0,6,0,0">
+                            <Border BackgroundColor="{Binding CategoriaCor}" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Label Text="{Binding Categoria}"
-                                       FontSize="12"
                                        TextColor="White"
                                        Padding="8,3"
-                                       FontAttributes="Bold" />
+                                       FontSize="12"
+                                       FontAttributes="Bold"/>
                             </Border>
 
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="#333"
-                                    StrokeShape="RoundRectangle 8">
+                            <Border BackgroundColor="#333" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Label Text="{Binding Subcategoria}"
-                                       FontSize="12"
                                        TextColor="#DDD"
-                                       Padding="6,3" />
+                                       Padding="6,3"
+                                       FontSize="12"/>
                             </Border>
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
-                    <!-- Ações -->
-                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                    <!-- AÇÕES -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1"
+                                         Spacing="10"
+                                         HorizontalOptions="End"
+                                         VerticalOptions="Center">
 
-                        <!-- Editar -->
                         <Button Text="✏️"
-            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
-            CommandParameter="{Binding .}"
-            BackgroundColor="Transparent"
-            FontSize="14"
-            TextColor="#FFCC00"
-            Padding="0" />
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=EditarDividaCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                TextColor="#FFCC00"
+                                FontSize="16"
+                                Padding="0"/>
 
-                        <!-- Ativar/Inativar -->
                         <Button Text="{Binding Ativa, Converter={StaticResource BooleanToToggleTextConverter}}"
-            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
-            CommandParameter="{Binding .}"
-            BackgroundColor="Transparent"
-            FontSize="11"
-            TextColor="Gray"
-            Padding="0" />
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=AlternarStatusDividaCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                TextColor="#AAA"
+                                FontSize="12"
+                                Padding="0"/>
 
-                        <!-- Excluir -->
                         <Button Text="🗑️"
-            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=ExcluirDividaCommand}"
-            CommandParameter="{Binding .}"
-            BackgroundColor="Transparent"
-            FontSize="12"
-            TextColor="Red"
-            Padding="0" />
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DividaViewModel}}, Path=ExcluirDividaCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                TextColor="#FF4F4F"
+                                FontSize="14"
+                                Padding="0"/>
                     </VerticalStackLayout>
 
                 </Grid>
             </Frame>
         </DataTemplate>
+
     </ContentPage.Resources>
 
-    <Grid Padding="20" RowDefinitions="Auto,Auto,*,Auto">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-        <!-- 🔹 Seletor de mês -->
-        <HorizontalStackLayout Grid.Row="0" Spacing="10" HorizontalOptions="Center" Margin="0,0,0,10">
-            <Button Text="◀️" Command="{Binding MudarMesAnteriorCommand}" />
-            <Label Text="{Binding MesSelecionado, StringFormat='{}{0:D2}/'}"
-                   FontSize="18" FontAttributes="Bold" TextColor="White" />
-            <Label Text="{Binding AnoSelecionado}" FontSize="18" FontAttributes="Bold" TextColor="White" />
-            <Button Text="▶️" Command="{Binding MudarProximoMesCommand}" />
-        </HorizontalStackLayout>
+            <!-- HEADER COM GRADIENTE PREMIUM -->
+            <Frame Padding="25"
+       CornerRadius="20"
+       HasShadow="True"
+       Margin="20,10"
+       HorizontalOptions="Fill"
+       VerticalOptions="Start">
 
-        <!-- Header -->
-        <Frame Grid.Row="1"
-               BackgroundColor="{StaticResource PrimaryColor}" 
-               CornerRadius="12"
-               Margin="0,0,0,10">
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Total em Dívidas" TextColor="White" FontSize="16" HorizontalOptions="Center" />
-                <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}"
-                       TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-        </Frame>
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#6a11cb" Offset="0.0" />
+                        <GradientStop Color="#2575fc" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
 
-        <!-- Lista -->
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Dividas}"
-                        ItemTemplate="{StaticResource DividaTemplate}"
-                        SelectionMode="None"
-                        ItemSizingStrategy="MeasureFirstItem"
-                        RemainingItemsThreshold="5"
-                        RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}">
-            <CollectionView.Footer>
-                <StackLayout Padding="10" HorizontalOptions="Center" VerticalOptions="Center">
-                    <ActivityIndicator IsRunning="{Binding CarregandoMais}" IsVisible="{Binding CarregandoMais}" />
-                    <Label Text="Carregando mais..." 
-                           IsVisible="{Binding CarregandoMais}" 
-                           FontSize="12" 
-                           TextColor="#AAA"
-                           HorizontalOptions="Center" />
-                </StackLayout>
-            </CollectionView.Footer>
-        </CollectionView>
+                <VerticalStackLayout Spacing="16" HorizontalOptions="Center">
 
-        <!-- Botão Nova Dívida -->
-        <Button Text="+ Nova Dívida" 
-                Command="{Binding NovaDividaCommand}"
-                Grid.Row="3"
-                Margin="0,20,0,0"
-                HeightRequest="50"/>
+                    <!-- TÍTULO -->
+                    <Label Text="Dívidas"
+               TextColor="White"
+               FontSize="30"
+               FontAttributes="Bold"
+               HorizontalTextAlignment="Center"/>
 
-        <ActivityIndicator IsVisible="{Binding IsBusy}" 
-                           IsRunning="{Binding IsBusy}"
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center" />
-    </Grid>
+                    <!-- SELETOR DE MÊS EM "CÁPSULA" -->
+                    <Border Background="#fff2cc"
+                StrokeThickness="0"
+                Padding="12"
+                StrokeShape="RoundRectangle 20"
+                HorizontalOptions="Center">
+
+                        <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+
+                            <!-- MÊS ANTERIOR -->
+                            <ImageButton Source="chevron_left.png"
+                             BackgroundColor="Black"
+                             HeightRequest="32"
+                             WidthRequest="32"
+                             Command="{Binding MudarMesAnteriorCommand}"
+                             Scale="0.9"/>
+
+                            <!-- MÊS / ANO -->
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding MesSelecionado, StringFormat='{}{0:D2}/'}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="Black"/>
+
+                                <Label Text="{Binding AnoSelecionado}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="Black"/>
+                            </HorizontalStackLayout>
+
+                            <!-- PRÓXIMO MÊS -->
+                            <ImageButton Source="chevron_right.png"
+                             BackgroundColor="Black"
+                             HeightRequest="32"
+                             WidthRequest="32"
+                             Command="{Binding MudarProximoMesCommand}"
+                             Scale="0.9"/>
+                        </HorizontalStackLayout>
+
+                    </Border>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+            <!-- TOTAL -->
+            <Frame BackgroundColor="#1E1E1E" CornerRadius="18" Padding="20">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Total em Dívidas" TextColor="#BBB" FontSize="14"/>
+                    <Label Text="{Binding TotalDividas, StringFormat='R$ {0:F2}'}"
+                           TextColor="White"
+                           FontSize="30"
+                           FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- LISTA -->
+            <CollectionView
+                ItemsSource="{Binding Dividas}"
+                ItemTemplate="{StaticResource DividaTemplate}"
+                SelectionMode="None"
+                ItemSizingStrategy="MeasureFirstItem"
+                RemainingItemsThreshold="5"
+                RemainingItemsThresholdReachedCommand="{Binding CarregarMaisCommand}">
+            </CollectionView>
+
+            <!-- NOVA DIVIDA -->
+            <Frame CornerRadius="20"
+                   Padding="15"
+                   BackgroundColor="#2575fc"
+                   HasShadow="True"
+                   Margin="0,10,0,20">
+
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer 
+                        Command="{Binding NovaDividaCommand}" 
+                        NumberOfTapsRequired="1"/>
+                </Frame.GestureRecognizers>
+
+                <Label Text="+ Nova Dívida"
+                       TextColor="White"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

@@ -1,12 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="Gastei.UI.Views.OrcamentoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:converters="clr-namespace:Gastei.UI.Converters"
+    x:DataType="viewmodels:OrcamentoViewModel"
+    BackgroundColor="#121212"
     Title="Orçamento">
 
-    <!-- ✅ Registra localmente o conversor -->
+    <!-- CONVERTERS -->
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PercentConverter x:Key="PercentConverter" />
@@ -16,82 +19,150 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Cabeçalho -->
-            <Label Text="{Binding MesSelecionado}"
-                   FontAttributes="Bold"
-                   FontSize="20"
-                   HorizontalOptions="Center"/>
+            <!-- 🟣 HEADER COM GRADIENTE -->
+            <Frame Padding="25"
+                   CornerRadius="20"
+                   HasShadow="True"
+                   Margin="0,5,0,5">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#6a11cb" Offset="0.0" />
+                        <GradientStop Color="#2575fc" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
 
-            <!-- Saldo -->
-            <Frame BackgroundColor="{StaticResource PrimaryColor}" CornerRadius="12" Padding="15">
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="Saldo Atual" FontSize="16" TextColor="White"/>
-                    <Label Text="{Binding SaldoDisponivel, StringFormat='R$ {0:F2}'}"
-               FontSize="26" FontAttributes="Bold" TextColor="White"/>
-                    <Label Text="{Binding TotalGastos, StringFormat='Total de Gastos: R$ {0:F2}'}"
-               FontSize="13" TextColor="#DDD"/>
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
 
-                    <!-- Progresso total do limite -->
-                    <VerticalStackLayout Margin="0,10,0,0">
-                        <Label Text="Uso do Limite Total" 
-           FontSize="14" 
-           TextColor="#DDD"/>
+                    <!--<Image Source="budget.png"
+                           HeightRequest="10"
+                           Margin="0,0,0,10"/>-->
 
-                        <ProgressBar Progress="{Binding PercentualTotal}" 
-                 HeightRequest="8" 
-                 Margin="0,4,0,0"/>
+                    <Label Text="Orçamento"
+                           TextColor="White"
+                           FontSize="28"
+                           FontAttributes="Bold"/>
 
-                        <Label Text="{Binding PercentualTotal, StringFormat='{0:P0} utilizado'}" 
-           FontSize="12" 
-           TextColor="#AAA"/>
-                    </VerticalStackLayout>
-
-                    <!-- Novo Border -->
-                    <Border Stroke="#555"
-                StrokeThickness="1"
-                BackgroundColor="#2B2B2B"
-                StrokeShape="RoundRectangle 8"
-                Margin="0,10,0,0"
-                Padding="10">
-                        <VerticalStackLayout Spacing="2">
-                            <Label Text="Projeção Próximo Mês" FontSize="16" TextColor="#AAA"/>
-                            <Label Text="{Binding TotalProximoMes, StringFormat='R$ {0:F2}'}"
-                       FontSize="22" FontAttributes="Bold" TextColor="#FFF"/>
-                        </VerticalStackLayout>
-                    </Border>
+                    <Label Text="{Binding MesSelecionado}"
+                           FontSize="16"
+                           TextColor="#E5E5E5"/>
                 </VerticalStackLayout>
             </Frame>
 
 
-            <!-- Projeção -->
-            <!--<Frame BackgroundColor="#2E2E2E" CornerRadius="12" Padding="15">
-                <VerticalStackLayout Spacing="5">
-            
-                </VerticalStackLayout>
-            </Frame>-->
+            <!-- 💰 RESUMO GERAL -->
+            <Frame BackgroundColor="#1E1E1E"
+                   CornerRadius="16"
+                   Padding="20"
+                   HasShadow="True">
 
-            <!-- Gastos por categoria -->
-            <Label Text="Gastos por Categoria" FontAttributes="Bold" FontSize="18"/>
+                <VerticalStackLayout Spacing="14">
+
+                    <!-- Saldo disponível -->
+                    <Label Text="Saldo Disponível"
+                           FontSize="16"
+                           TextColor="#AAA"/>
+
+                    <Label Text="{Binding SaldoDisponivel, StringFormat='R$ {0:F2}'}"
+                           FontSize="30"
+                           FontAttributes="Bold"
+                           TextColor="#4CAF50"/>
+
+                    <Label Text="{Binding TotalGastos, StringFormat='Total gasto: R$ {0:F2}'}"
+                           FontSize="14"
+                           TextColor="#BBB"/>
+
+                    <!-- Barra de uso do limite -->
+                    <VerticalStackLayout>
+                        <Label Text="Uso do Limite Mensal"
+                               FontSize="14"
+                               TextColor="#CCC"/>
+
+                        <ProgressBar Progress="{Binding PercentualTotal}"
+                                     HeightRequest="10"
+                                     Margin="0,6,0,0"/>
+
+                        <Label Text="{Binding PercentualTotal, StringFormat='{0:P0} do limite'}"
+                               FontSize="12"
+                               TextColor="#AAA"/>
+                    </VerticalStackLayout>
+
+                    <!-- Projeção -->
+                    <Border Stroke="#444"
+                            StrokeThickness="1"
+                            BackgroundColor="#262626"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="12"
+                            Margin="0,15,0,0">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Projeção Próximo Mês"
+                                   FontSize="14"
+                                   TextColor="#888"/>
+
+                            <Label Text="{Binding TotalProximoMes, StringFormat='R$ {0:F2}'}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+            <!-- 📊 GASTOS POR CATEGORIA -->
+            <Label Text="Gastos por Categoria"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="White"/>
 
             <CollectionView ItemsSource="{Binding ResumoCategorias}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="viewmodels:CategoriaResumo">
-                        <Frame Padding="10" Margin="0,5" CornerRadius="10" BackgroundColor="#1E1E1E">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Text="{Binding Categoria}" FontSize="14" TextColor="White"/>
+
+                        <Frame BackgroundColor="#1C1C1C"
+                               Padding="15"
+                               Margin="0,8"
+                               CornerRadius="14"
+                               HasShadow="False">
+
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="*,Auto">
+
+                                <!-- Nome da Categoria -->
+                                <Label Text="{Binding Categoria}"
+                                       TextColor="White"
+                                       FontSize="16"
+                                       FontAttributes="Bold"/>
+
+                                <!-- Valor -->
                                 <Label Text="{Binding Total, StringFormat='R$ {0:F2}'}"
-                                       Grid.Column="1" FontSize="14" TextColor="#DDD"/>
-                                <!-- ✅ Agora usa o conversor local -->
-                                <ProgressBar Grid.ColumnSpan="2" 
-                                             Progress="{Binding Percentual, Converter={StaticResource PercentConverter}}" 
-                                             HeightRequest="6" Margin="0,20,0,0"/>
+                                       Grid.Column="1"
+                                       TextColor="#E0E0E0"
+                                       FontSize="15"
+                                       HorizontalOptions="End"/>
+
+                                <!-- Barra -->
+                                <ProgressBar Grid.Row="1"
+                                             Grid.ColumnSpan="2"
+                                             Progress="{Binding Percentual, Converter={StaticResource PercentConverter}}"
+                                             HeightRequest="8"
+                                             Margin="0,10,0,0"/>
                             </Grid>
+
                         </Frame>
+
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <!-- LOADING -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               Margin="0,20"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
