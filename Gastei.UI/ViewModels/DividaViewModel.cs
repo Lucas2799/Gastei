@@ -76,17 +76,25 @@ public partial class DividaViewModel : BaseViewModel
             {
                 d.Status = d.Ativa ? "✅ Ativa" : "❌ Inativa";
                 d.StatusCor = d.Ativa ? Colors.Green : Colors.Red;
+                d.CategoriaCor = d.Categoria switch
+                {
+                    Core.Enums.CategoriaDivida.Moradia => Color.FromArgb("#1976D2"),
+                    Core.Enums.CategoriaDivida.Lazer => Color.FromArgb("#E91E63"),
+                    Core.Enums.CategoriaDivida.Alimentacao => Color.FromArgb("#4CAF50"),
+                    Core.Enums.CategoriaDivida.Transporte => Color.FromArgb("#FF9800"),
+                    _ => Color.FromArgb("#9E9E9E")
+                };
             }
 
             Dividas = new ObservableCollection<Divida>(_todasDividas);
             TotalDividas = Dividas.Sum(d => d.Valor);
-            await LoadAsync();
         }
         finally
         {
             IsBusy = false;
         }
     }
+
 
 
     [RelayCommand]
@@ -153,7 +161,6 @@ public partial class DividaViewModel : BaseViewModel
             _paginaAtual++;
 
             TotalDividas = Dividas.Sum(d => d.Valor);
-            await LoadAsync();
         }
         finally
         {

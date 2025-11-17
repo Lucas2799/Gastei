@@ -56,16 +56,14 @@ public class DividaRepository : IDividaRepository
         var proximoMes = mesAtual == 12 ? 1 : mesAtual + 1;
         var proximoAno = mesAtual == 12 ? anoAtual + 1 : anoAtual;
 
-        // ✅ Só replica nos primeiros 3 dias do mês
-        if (hoje.Day > 3)
-            return;
-
         // ✅ Verifica se já existem registros do próximo mês
-        var jaExiste = await _database.Table<Divida>()
-            .Where(d => d.ReferenciaMes == proximoMes && d.ReferenciaAno == proximoAno)
-            .CountAsync();
+        var fixasProximoMes = await _database.Table<Divida>()
+     .Where(d => d.Tipo == TipoDivida.Fixa &&
+                 d.ReferenciaMes == proximoMes &&
+                 d.ReferenciaAno == proximoAno)
+     .CountAsync();
 
-        if (jaExiste > 0)
+        if (fixasProximoMes < 0)
             return;
 
         // ✅ Busca apenas as FIXAS do mês atual
@@ -109,25 +107,16 @@ public class DividaRepository : IDividaRepository
     {
         entity.DataCriacao = DateTime.Now;
 
-        // Se não tiver referência, definir automaticamente:
         if (entity.ReferenciaMes == 0 || entity.ReferenciaAno == 0)
         {
-            if (entity.Tipo == TipoDivida.Fixa)
-            {
-                var next = DateTime.Now.AddMonths(1);
-                entity.ReferenciaMes = next.Month;
-                entity.ReferenciaAno = next.Year;
-            }
-            else
-            {
-                var now = DateTime.Now;
-                entity.ReferenciaMes = now.Month;
-                entity.ReferenciaAno = now.Year;
-            }
+            var now = DateTime.Now;
+            entity.ReferenciaMes = now.Month;
+            entity.ReferenciaAno = now.Year;
         }
 
         return await _database.InsertAsync(entity);
     }
+
 
     public async Task<int> UpdateAsync(Divida entity)
     {
@@ -155,7 +144,7 @@ public class DividaRepository : IDividaRepository
         var ano = DateTime.Now.Year;
 
         return await _database.Table<Divida>()
-            //.Where(d => d.Ativa && d.ReferenciaMes == mes && d.ReferenciaAno == ano)
+            .Where(d => d.Ativa && d.ReferenciaMes == mes && d.ReferenciaAno == ano)
             .OrderBy(d => d.DiaVencimento)
             .ToListAsync();
     }
