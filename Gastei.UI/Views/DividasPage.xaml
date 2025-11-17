@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:entities="clr-namespace:Gastei.Core.Entities;assembly=Gastei.Core"
-    BackgroundColor="#121212"
+     BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight},
+                                      Dark={StaticResource PageBackgroundDark}}"
     Title="Dívidas">
 
     <ContentPage.Resources>

@@ -7,18 +7,32 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <!-- Importar nossos recursos -->
+
+            <!-- IMPORTAÇÃO DE RESOURCES -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Conversores -->
+            <!-- 🎨 BACKGROUNDS PARA THEME -->
+            <Color x:Key="PageBackgroundLight">#F5F5F5</Color>
+            <Color x:Key="PageBackgroundDark">#121212</Color>
+
+            <Color x:Key="CardBackgroundLight">White</Color>
+            <Color x:Key="CardBackgroundDark">#1E1E1E</Color>
+
+            <Color x:Key="TextPrimaryLight">#222222</Color>
+            <Color x:Key="TextPrimaryDark">#FFFFFF</Color>
+
+            <Color x:Key="TextSecondaryLight">#555555</Color>
+            <Color x:Key="TextSecondaryDark">#BBBBBB</Color>
+
+            <!-- 🔧 CONVERTERS (FINALMENTE CORRETOS) -->
             <converters:BooleanToStatusConverter x:Key="BooleanToStatusConverter" />
             <converters:BooleanToToggleTextConverter x:Key="BooleanToToggleTextConverter" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <converters:CategoriaToColorConverter x:Key="CategoriaToColorConverter" />
-            <converters:PercentConverter  x:Key="PercentConverter " />
+            <converters:PercentConverter x:Key="PercentConverter" />
         </ResourceDictionary>
     </Application.Resources>
 

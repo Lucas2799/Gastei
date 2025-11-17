@@ -6,7 +6,8 @@
     xmlns:viewmodels="clr-namespace:Gastei.UI.ViewModels"
     xmlns:converters="clr-namespace:Gastei.UI.Converters"
     x:DataType="viewmodels:OrcamentoViewModel"
-    BackgroundColor="#121212"
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight},
+                                      Dark={StaticResource PageBackgroundDark}}"
     Title="Orçamento">
 
     <!-- CONVERTERS -->

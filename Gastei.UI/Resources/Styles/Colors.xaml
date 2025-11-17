@@ -3,27 +3,27 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Cores Primárias -->
-    <Color x:Key="PrimaryColor">#512BD4</Color>
-    <Color x:Key="PrimaryDarkColor">#3A1FA5</Color>
-    <Color x:Key="SecondaryColor">#FF6B35</Color>
+    <!-- ✨ Cores principais -->
+    <Color x:Key="PrimaryColor">#6A11CB</Color>
+    <Color x:Key="PrimaryDarkColor">#4E0F9B</Color>
 
-    <!-- Cores de Texto -->
-    <Color x:Key="TextColor">Black</Color>
-    <Color x:Key="TextColorDark">White</Color>
+    <!-- ✨ Background -->
+    <Color x:Key="PageBackgroundLight">#FFFFFF</Color>
+    <Color x:Key="PageBackgroundDark">#121212</Color>
 
-    <Color x:Key="SecondaryTextColor">#666666</Color>
-    <Color x:Key="SecondaryTextColorDark">#AAAAAA</Color>
+    <!-- ✨ Card Background -->
+    <Color x:Key="CardBackgroundLight">#F2F2F2</Color>
+    <Color x:Key="CardBackgroundDark">#1E1E1E</Color>
 
-    <!-- Cores de Fundo -->
-    <Color x:Key="PageBackgroundColor">White</Color>
-    <Color x:Key="PageBackgroundColorDark">#1C1C1E</Color>
+    <!-- ✨ Texto -->
+    <Color x:Key="TextColorLight">#222222</Color>
+    <Color x:Key="TextColorDark">#FFFFFF</Color>
 
-    <Color x:Key="CardBackgroundColor">#F8F9FA</Color>
-    <Color x:Key="CardBackgroundColorDark">#2C2C2E</Color>
+    <Color x:Key="SubtitleColorLight">#666666</Color>
+    <Color x:Key="SubtitleColorDark">#BBBBBB</Color>
 
-    <Color x:Key="CardBorderColor">#DEE2E6</Color>
-    <Color x:Key="CardBorderColorDark">#404040</Color>
+    <Color x:Key="BorderLight">#DDDDDD</Color>
+    <Color x:Key="BorderDark">#333333</Color>
 
     <!-- Cores de Input -->
     <Color x:Key="EntryBackgroundColor">White</Color>
