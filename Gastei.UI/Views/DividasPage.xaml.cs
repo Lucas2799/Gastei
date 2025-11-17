@@ -18,19 +18,13 @@ public partial class DividasPage : ContentPage
     }
 
     protected override async void OnAppearing()
-    {
-        base.OnAppearing();
+{
+    base.OnAppearing();
 
-        var databaseService = GetDatabaseService();
-        if (databaseService != null)
-        {
-            var repo = new DividaRepository(databaseService);
-            await repo.ReplicarFixasParaMesSeguinteAsync();
-        }
+    if (BindingContext is DividaViewModel vm)
+        await vm.CarregarMesAtualAsync();
+}
 
-        if (BindingContext is DividaViewModel vm)
-            await vm.CarregarMesAtualAsync();
-    }
 
     private DatabaseService GetDatabaseService()
     {

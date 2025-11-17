@@ -24,6 +24,8 @@ public partial class OrcamentoViewModel : BaseViewModel
     [ObservableProperty] private ObservableCollection<CategoriaResumo> resumoCategorias = new();
     [ObservableProperty] private string mesSelecionado = DateTime.Now.ToString("MMMM yyyy");
     [ObservableProperty] private PerfilFinanceiro perfilSelecionado;
+    [ObservableProperty] private int mesReferencia = DateTime.Now.Month;
+    [ObservableProperty] private int anoReferencia = DateTime.Now.Year;
 
 
     // 🔥 Calcula o limite total dinâmico com base em todas as categorias
@@ -87,7 +89,7 @@ public partial class OrcamentoViewModel : BaseViewModel
             // --------------------------
             // CARREGAR DÍVIDAS
             // --------------------------
-            var dividas = await _dividaRepository.GetAllAsync();
+            var dividas = await _dividaRepository.GetDividasPorMesAsync(mesReferencia,anoReferencia);
             var dividasAtivas = dividas.Where(d => d.Ativa).ToList();
 
             TotalGastos = dividasAtivas.Sum(d => d.Valor);

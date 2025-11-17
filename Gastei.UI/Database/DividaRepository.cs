@@ -46,29 +46,25 @@ public class DividaRepository : IDividaRepository
             .Sum(d => d.Valor);
         return soma;
     }
-
     public async Task ReplicarFixasParaMesSeguinteAsync()
     {
         var hoje = DateTime.Now;
+
+        // Só replica nos primeiros 3 dias úteis
+        if (hoje.Day > 3)
+            return;
+
         var mesAtual = hoje.Month;
         var anoAtual = hoje.Year;
 
         var proximoMes = mesAtual == 12 ? 1 : mesAtual + 1;
         var proximoAno = mesAtual == 12 ? anoAtual + 1 : anoAtual;
 
-        // ✅ Verifica se já existem registros do próximo mês
-        var fixasProximoMes = await _database.Table<Divida>()
-     .Where(d => d.Tipo == TipoDivida.Fixa &&
-                 d.ReferenciaMes == proximoMes &&
-                 d.ReferenciaAno == proximoAno)
-     .CountAsync();
-
-        if (fixasProximoMes < 0)
-            return;
-
-        // ✅ Busca apenas as FIXAS do mês atual
+        // Busca FIXAS do mês atual
         var fixas = await _database.Table<Divida>()
-            .Where(d => d.Tipo == TipoDivida.Fixa && d.ReferenciaMes == mesAtual && d.ReferenciaAno == anoAtual)
+            .Where(d => d.Tipo == TipoDivida.Fixa &&
+                        d.ReferenciaMes == mesAtual &&
+                        d.ReferenciaAno == anoAtual)
             .ToListAsync();
 
         if (!fixas.Any())
@@ -76,6 +72,19 @@ public class DividaRepository : IDividaRepository
 
         foreach (var f in fixas)
         {
+            // VERIFICA SE ESSA DÍVIDA JA FOI REPLICADA
+           var existe = await _database.Table<Divida>()
+    .Where(x =>
+        x.Tipo == TipoDivida.Fixa &&
+        x.Descricao == f.Descricao &&
+        x.ReferenciaMes == proximoMes &&
+        x.ReferenciaAno == proximoAno)
+    .FirstOrDefaultAsync();
+
+if (existe != null)
+    continue;
+
+            // CRIA NOVA CÓPIA
             var nova = new Divida
             {
                 Descricao = f.Descricao,
@@ -86,15 +95,14 @@ public class DividaRepository : IDividaRepository
                 Categoria = f.Categoria,
                 Subcategoria = f.Subcategoria,
                 Ativa = f.Ativa,
-                DataCriacao = DateTime.Now,
+                Fixa = true,
                 ReferenciaMes = proximoMes,
-                ReferenciaAno = proximoAno
+                ReferenciaAno = proximoAno,
+                DataCriacao = DateTime.Now
             };
 
             await _database.InsertAsync(nova);
         }
-
-        System.Diagnostics.Debug.WriteLine($"✅ {fixas.Count} dívidas fixas replicadas para {proximoMes}/{proximoAno}");
     }
 
 
